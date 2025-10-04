@@ -23,6 +23,7 @@ function saveTasks(tasks) {
 
 export function addTask(task) {
   const tasks = loadTasks();
+
   const newTask = {
     description: task,
     done: false,
