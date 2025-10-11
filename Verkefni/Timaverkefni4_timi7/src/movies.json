@@ -1,0 +1,32 @@
+[
+  {
+    "id": "a8db343c-924e-4f1f-93b4-12cb3dadb317",
+    "title": "Stella í Orlofi",
+    "year": 1990,
+    "watched": true
+  },
+  {
+    "id": "f9784378-8639-452d-bde8-e482a3ad835f",
+    "title": "Löggulíf",
+    "year": 1990,
+    "watched": false
+  },
+  {
+    "id": "363c82c9-730d-43aa-8768-939fa9dca8b3",
+    "title": "Löggulíf2",
+    "year": 1990,
+    "watched": false
+  },
+  {
+    "id": "5d1b5427-3d16-493b-8a2d-b6a1498fd9cb",
+    "title": "Löggulíf46",
+    "year": 1990,
+    "watched": false
+  },
+  {
+    "id": "540a20e9-73a2-4103-87ae-c043cc95f722",
+    "title": "Löggulíf46",
+    "year": 1990,
+    "watched": false
+  }
+]
