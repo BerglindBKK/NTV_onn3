@@ -20,15 +20,11 @@ router.get('/', async (req, res, next: NextFunction) => {
   }
 });
 
-router.post('/', async (req, res, next: NextFunction) => {
+router.post('/,', async (req, res, next: NextFunction) => {
   try {
-    const { name, email, bio } = req.body as {
-      name: string;
-      email: string;
-      bio: string;
-    };
-    const createdAuthor = await addAuthors(name, email, bio);
-    res.status(201).json({ success: true, data: createdAuthor });
+    const { author } = req.body;
+    const createdAuthor = await addAuthor(author);
+    response.status(201).json({ success: true, data: createdAuthor });
   } catch (error) {
     next(error);
   }

@@ -38,9 +38,10 @@ export async function loadAuthors(): Promise<Author[]> {
 
 export async function saveAuthors(
   authorsFilePath: string,
-  authors: Author[]
+  authors = Author[]
 ): Promise<void> {
-  await writeFile(authorsFilePath, JSON.stringify(authors, null, 2));
+  
+    await writeFile(authorsFilePath, JSON.stringify(authors, null, 2));
   //try/catch + errors
 }
 
@@ -50,7 +51,7 @@ export async function addAuthors(
   bio: string
 ): Promise<Author> {
   try {
-    const authors = await loadAuthors();
+    const authors = await loadAuthors(authorsFilePath);
 
     const newAuthor = {
       id: createId(),
@@ -60,11 +61,10 @@ export async function addAuthors(
     };
 
     authors.push(newAuthor);
-    await saveAuthors(authorsFilePath, authors);
-    return newAuthor;
+    //seiva
+    return authors;
   } catch (error) {
     console.error('[addAuthors] error:', error);
-    throw new Error('addMoviesAsync error '); //laga við errormeðhöndlun
     //throw error seinna
   }
 }

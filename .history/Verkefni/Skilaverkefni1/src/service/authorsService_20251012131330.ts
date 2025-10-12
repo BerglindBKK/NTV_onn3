@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import { randomUUID } from 'node:crypto';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { readFile, writeFile } from 'node:fs/promises';
+import { readFile } from 'node:fs/promises';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -24,10 +24,6 @@ export async function loadAuthors(): Promise<Author[]> {
     const data = await readFile(authorsFilePath, { encoding: 'utf8' });
     const jsondata = JSON.parse(data);
     console.log('JSON data:', jsondata);
-
-    if (!Array.isArray(jsondata)) {
-      throw new Error('Expected JSON array');
-    }
     return jsondata;
   } catch (error) {
     console.error('[loadAuthors] error:', error);
@@ -36,35 +32,12 @@ export async function loadAuthors(): Promise<Author[]> {
   }
 }
 
-export async function saveAuthors(
-  authorsFilePath: string,
-  authors: Author[]
-): Promise<void> {
-  await writeFile(authorsFilePath, JSON.stringify(authors, null, 2));
-  //try/catch + errors
-}
+export async function saveAuthors(): Promise<void> {}
 
-export async function addAuthors(
-  name: string,
-  email: string,
-  bio: string
-): Promise<Author> {
+export async function addAuthors(): Promise<Author> {
   try {
-    const authors = await loadAuthors();
-
-    const newAuthor = {
-      id: createId(),
-      name: name,
-      email: email,
-      bio: bio,
-    };
-
-    authors.push(newAuthor);
-    await saveAuthors(authorsFilePath, authors);
-    return newAuthor;
   } catch (error) {
     console.error('[addAuthors] error:', error);
-    throw new Error('addMoviesAsync error '); //laga við errormeðhöndlun
-    //throw error seinna
+    return;
   }
 }

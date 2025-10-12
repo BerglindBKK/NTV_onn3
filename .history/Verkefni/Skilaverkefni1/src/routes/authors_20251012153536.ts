@@ -3,7 +3,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { validate } from '../middleware/validate.js';
-import { addAuthors, loadAuthors } from '../service/authorsService.js';
+import { loadAuthors } from '../service/authorsService.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -20,19 +20,9 @@ router.get('/', async (req, res, next: NextFunction) => {
   }
 });
 
-router.post('/', async (req, res, next: NextFunction) => {
-  try {
-    const { name, email, bio } = req.body as {
-      name: string;
-      email: string;
-      bio: string;
-    };
-    const createdAuthor = await addAuthors(name, email, bio);
-    res.status(201).json({ success: true, data: createdAuthor });
-  } catch (error) {
-    next(error);
-  }
-});
+router.post('/,', async(req,res,next) => {
+  req.body.id = 
+})
 
 export default router;
 

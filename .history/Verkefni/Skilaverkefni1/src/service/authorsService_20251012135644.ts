@@ -60,11 +60,10 @@ export async function addAuthors(
     };
 
     authors.push(newAuthor);
-    await saveAuthors(authorsFilePath, authors);
-    return newAuthor;
+    saveAuthors();
+    return authors;
   } catch (error) {
     console.error('[addAuthors] error:', error);
-    throw new Error('addMoviesAsync error '); //laga við errormeðhöndlun
     //throw error seinna
   }
 }

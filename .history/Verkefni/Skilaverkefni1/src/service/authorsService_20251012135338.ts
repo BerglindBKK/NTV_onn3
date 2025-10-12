@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import { randomUUID } from 'node:crypto';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { readFile, writeFile } from 'node:fs/promises';
+import { readFile } from 'node:fs/promises';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -19,7 +19,7 @@ export type Author = {
   bio: string;
 };
 
-export async function loadAuthors(): Promise<Author[]> {
+export async function loadAuthors(authorsFilePath: string): Promise<Author[]> {
   try {
     const data = await readFile(authorsFilePath, { encoding: 'utf8' });
     const jsondata = JSON.parse(data);
@@ -38,9 +38,10 @@ export async function loadAuthors(): Promise<Author[]> {
 
 export async function saveAuthors(
   authorsFilePath: string,
-  authors: Author[]
+  authors = Author[]
 ): Promise<void> {
-  await writeFile(authorsFilePath, JSON.stringify(authors, null, 2));
+  
+    await writeFile(authorsFilePath, JSON.stringify(authors, null, 2));
   //try/catch + errors
 }
 
@@ -50,7 +51,7 @@ export async function addAuthors(
   bio: string
 ): Promise<Author> {
   try {
-    const authors = await loadAuthors();
+    const authors = await loadAuthors(authorsFilePath);
 
     const newAuthor = {
       id: createId(),
@@ -60,11 +61,10 @@ export async function addAuthors(
     };
 
     authors.push(newAuthor);
-    await saveAuthors(authorsFilePath, authors);
-    return newAuthor;
+    //seiva
+    return authors;
   } catch (error) {
     console.error('[addAuthors] error:', error);
-    throw new Error('addMoviesAsync error '); //laga við errormeðhöndlun
     //throw error seinna
   }
 }

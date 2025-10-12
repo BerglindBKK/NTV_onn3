@@ -20,7 +20,7 @@ router.get('/', async (req, res, next: NextFunction) => {
   }
 });
 
-router.post('/', async (req, res, next: NextFunction) => {
+router.post('/,', async (req, res, next: NextFunction) => {
   try {
     const { name, email, bio } = req.body as {
       name: string;

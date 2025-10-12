@@ -64,7 +64,7 @@ export async function addAuthors(
     return newAuthor;
   } catch (error) {
     console.error('[addAuthors] error:', error);
-    throw new Error('addMoviesAsync error '); //laga við errormeðhöndlun
+    throw new Error('addMoviesAsync: ' + error.message);
     //throw error seinna
   }
 }
