@@ -10,5 +10,17 @@
     "name": "s",
     "email": "birgitta@example.com",
     "bio": "hún hefur fingur"
+  },
+  {
+    "id": "fb6a12f9-9b35-42fb-8cee-ddb8ef0ad285",
+    "name": "Gunnar Helgason",
+    "email": "Gunnar@example.com",
+    "bio": "boring"
+  },
+  {
+    "id": "a5602778-82ad-46e2-92f8-817999b80353",
+    "name": "Alice Johnson",
+    "email": "alice@example.com",
+    "bio": "Tech writer"
   }
 ]

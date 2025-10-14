@@ -6,9 +6,9 @@ export const createAuthorSchema = z.object({
   bio: z.string().optional(),
 });
 
-export const idParamSchema = z.object({
-  id: z.string().uuid(),
-});
+// export const idParamSchema = z.object({
+//   id: z.string().uuid(),
+// });
 
 //   name: string, required, max 100 characters,
 //   email: string, email,

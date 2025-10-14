@@ -111,29 +111,25 @@ router.post(
  * @returns 200 - { success: true, message: 'Author deleted successfully' }
  * @returns 404 - { success: false, error: 'Author not found' }
  */
-router.delete(
-  '/:id',
-  validateParams(idParamSchema),
-  async (req, res, next: NextFunction) => {
-    try {
-      const { id } = req.params as { id: string };
+router.delete('/:id', async (req, res, next: NextFunction) => {
+  try {
+    const { id } = req.params as { id: string };
 
-      //tries to delete author via helper function, returns 404 false if not found
-      const clear = await clearAuthor(id);
-      if (!clear)
-        return res
-          .status(404)
-          .json({ success: false, error: 'Author not found' });
-
-      //successfully deleted
+    //tries to delete author via helper function, returns 404 false if not found
+    const clear = await clearAuthor(id);
+    if (!clear)
       return res
-        .status(200)
-        .json({ success: true, message: 'Author deleted successfully' });
-    } catch (error) {
-      next(error);
-    }
+        .status(404)
+        .json({ success: false, error: 'Author not found' });
+
+    //successfully deleted
+    return res
+      .status(200)
+      .json({ success: true, message: 'Author deleted successfully' });
+  } catch (error) {
+    next(error);
   }
-);
+});
 
 export default router;
 
