@@ -1,16 +1,14 @@
-import express, { NextFunction } from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 // import fs from 'fs/promises';
 // import path from 'path';
 // import { fileURLToPath } from 'url';
-// import { validate } from '../middleware/validate.js';
-import {
-  Author,
-  addAuthor,
-  loadAuthors,
-  clearAuthor,
-} from '../service/authorsService.js';
-import { validate, validateParams } from '../middleware/validate.js';
-import { createAuthorSchema, idParamSchema } from '../schemas/authorsSchema.js';
+import { validate } from '../middleware/validate.js';
+
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = path.dirname(__filename);
+// const articlesFilePath = path.join(__dirname, '../data/articles.json');
+
+const router = express.Router();
 
 // const __filename = fileURLToPath(import.meta.url);
 // const __dirname = path.dirname(__filename);
@@ -77,7 +75,7 @@ router.get(
  * @route   POST /api/authors
  * @desc    Creates a new author
  * @returns 201 - { success: true, data: Author }
- * @returns 400 - via validation middleware (Zod)
+ * @returns 500 - via global error handler (validation will be added later)
  */
 router.post(
   '/',
@@ -119,8 +117,8 @@ router.delete(
       const { id } = req.params as { id: string };
 
       //tries to delete author via helper function, returns 404 false if not found
-      const ok = await clearAuthor(id);
-      if (!ok)
+      const clear = await clearAuthor(id);
+      if (!clear)
         return res
           .status(404)
           .json({ success: false, error: 'Author not found' });
@@ -137,12 +135,11 @@ router.delete(
 
 export default router;
 
-// ### Authors
+// ### Articles
 
-// | Method | Endpoint                    | Description            |
-// | ------ | --------------------------- | ---------------------- |
-// | GET    | `/api/authors`              | Get all authors        |
-// | GET    | `/api/authors/:id`          | Get author by ID       |
-// | GET    | `/api/authors/:id/articles` | Get articles by author |
-// | POST   | `/api/authors`              | Create new author      |
-// | DELETE | `/api/authors/:id`          | Delete author          |
+// | Method | Endpoint            | Description        |
+// | ------ | ------------------- | ------------------ |
+// | GET    | `/api/articles`     | Get all articles   |
+// | GET    | `/api/articles/:id` | Get article by ID  |
+// | POST   | `/api/articles`     | Create new article |
+// | DELETE | `/api/articles/:id` | Delete article     |

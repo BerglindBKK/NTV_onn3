@@ -77,7 +77,7 @@ router.get(
  * @route   POST /api/authors
  * @desc    Creates a new author
  * @returns 201 - { success: true, data: Author }
- * @returns 400 - via validation middleware (Zod)
+ * @returns 400
  */
 router.post(
   '/',
@@ -119,8 +119,8 @@ router.delete(
       const { id } = req.params as { id: string };
 
       //tries to delete author via helper function, returns 404 false if not found
-      const ok = await clearAuthor(id);
-      if (!ok)
+      const clear = await clearAuthor(id);
+      if (!clear)
         return res
           .status(404)
           .json({ success: false, error: 'Author not found' });

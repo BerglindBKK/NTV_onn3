@@ -77,7 +77,7 @@ router.get(
  * @route   POST /api/authors
  * @desc    Creates a new author
  * @returns 201 - { success: true, data: Author }
- * @returns 400 - via validation middleware (Zod)
+ * @returns 400
  */
 router.post(
   '/',

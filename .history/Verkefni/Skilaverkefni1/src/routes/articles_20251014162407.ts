@@ -8,11 +8,7 @@ import {
   loadArticles,
   clearArticle,
 } from '../service/articlesService.js';
-import { validate, validateParams } from '../middleware/validate.js';
-import {
-  createArticlesSchema,
-  idParamSchema,
-} from '../schemas/articlesSchema.js';
+import { validate } from '../middleware/validate.js';
 
 // const __filename = fileURLToPath(import.meta.url);
 // const __dirname = path.dirname(__filename);
@@ -43,20 +39,20 @@ router.get('/', async (_req, res, next: NextFunction) => {
 
 /**
  * Get article by ID
- * @route   GET /api/articles/:id
+ * @route   GET /api/article/:id
  * @desc    Returns an article by id
  * @returns 200 - { success: true, data: Article }
  * @returns 404 - { success: false, error: 'Article not found' }
  */
 router.get(
   '/:id',
-  validateParams(idParamSchema),
+  //   validateParams(idParamSchema),
   async (req, res, next: NextFunction) => {
     try {
       const { id } = req.params as { id: string };
       const articles = await loadArticles();
 
-      //loads all articles and finds the article matching the id
+      //loads all artiles and finds the article matching the id
       const article = articles.find((article: Article) => {
         return article.id === id;
       });
@@ -79,12 +75,12 @@ router.get(
  * Create a new article
  * @route   POST /api/articles
  * @desc    Creates a new article
- * @returns returns a 201 when new article created
- * @returns @returns 400 - via validation middleware (Zod)
+ * @returns 201 - { success: true, data: Article }
+ * @returns 500 - via global error handler (validation will be added later)
  */
 router.post(
   '/',
-  validate(createArticlesSchema),
+  //   validate(createArticleSchema),
   async (req, res, next: NextFunction) => {
     try {
       const { title, content, authorId } = req.body as {
@@ -96,7 +92,7 @@ router.post(
       //creates a new article
       const createdArticle = await addArticle(title, content, authorId);
 
-      //returns a 201 when new article created
+      //returns a 201 when new aticle created
       res.status(201).json({
         success: true,
         data: createdArticle,
@@ -108,7 +104,7 @@ router.post(
 );
 
 /**
- * Delete an article by id
+ * Delete an articleby id
  * @route   DELETE /api/articles/:id
  * @desc    Deletes an article
  * @returns 200 - { success: true, message: 'Article deleted successfully' }
@@ -116,14 +112,14 @@ router.post(
  */
 router.delete(
   '/:id',
-  validateParams(idParamSchema),
+  //   validateParams(idParamSchema),
   async (req, res, next: NextFunction) => {
     try {
       const { id } = req.params as { id: string };
 
       //tries to delete article via helper function, returns 404 false if not found
-      const ok = await clearArticle(id);
-      if (!ok)
+      const clear = await clearArticle(id);
+      if (!clear)
         return res
           .status(404)
           .json({ success: false, error: 'Article not found' });

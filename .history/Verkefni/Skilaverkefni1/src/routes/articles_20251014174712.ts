@@ -79,8 +79,8 @@ router.get(
  * Create a new article
  * @route   POST /api/articles
  * @desc    Creates a new article
- * @returns returns a 201 when new article created
- * @returns @returns 400 - via validation middleware (Zod)
+ * @returns 201 - { success: true, data: Article }
+ * @returns 400
  */
 router.post(
   '/',
