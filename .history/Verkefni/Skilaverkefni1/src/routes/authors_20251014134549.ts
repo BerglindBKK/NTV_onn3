@@ -1,4 +1,4 @@
-import express, { NextFunction } from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 // import fs from 'fs/promises';
 // import path from 'path';
 // import { fileURLToPath } from 'url';
@@ -17,9 +17,9 @@ const router = express.Router();
 
 /**
  * Get all authors
- * @route   GET /api/authors
- * @returns 200 - { success: true, data: Author[] } (may be empty)
- * @returns 500 - via global error handler
+ * @route GET /api/authors
+ * @returns 200 - Authors[] if the authors were found
+ * @returns 500 if there was an error (via global error handler)
  */
 router.get('/', async (_req, res, next: NextFunction) => {
   try {
@@ -38,10 +38,10 @@ router.get('/', async (_req, res, next: NextFunction) => {
 
 /**
  * Get author by ID
- * @route   GET /api/authors/:id
- * @desc    Returns an author by id
- * @returns 200 - { success: true, data: Author }
- * @returns 404 - { success: false, error: 'Author not found' }
+ * @route GET /api/authors/:id
+ * @desc Returns an author by id
+ * @returns 200 - author if the author is found
+ * @returns 404 if author is not found
  */
 router.get('/:id', async (req, res, next: NextFunction) => {
   try {
@@ -68,10 +68,10 @@ router.get('/:id', async (req, res, next: NextFunction) => {
 
 /**
  * Create a new author
- * @route   POST /api/authors
- * @desc    Creates a new author
- * @returns 201 - { success: true, data: Author }
- * @returns 500 - via global error handler (validation will be added later)
+ * @route POST /api/authors/
+ * @desc Creates a new author
+ * @returns 201 - author created successfully
+ * @returns 400 if validation failed ********************* 500 for now - change after validation
  */
 router.post('/', async (req, res, next: NextFunction) => {
   try {
@@ -96,10 +96,10 @@ router.post('/', async (req, res, next: NextFunction) => {
 
 /**
  * Delete an author by id
- * @route   DELETE /api/authors/:id
- * @desc    Deletes an author
- * @returns 200 - { success: true, message: 'Author deleted successfully' }
- * @returns 404 - { success: false, error: 'Author not found' }
+ * @route DELETE /api/authors/:id
+ * @desc Deletes an author
+ * @returns 200 - author deleted successfully
+ * @returns 404 if author not found
  */
 router.delete('/:id', async (req, res, next: NextFunction) => {
   try {

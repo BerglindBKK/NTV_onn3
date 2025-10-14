@@ -1,4 +1,4 @@
-import express, { NextFunction } from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 // import fs from 'fs/promises';
 // import path from 'path';
 // import { fileURLToPath } from 'url';
@@ -96,10 +96,10 @@ router.post('/', async (req, res, next: NextFunction) => {
 
 /**
  * Delete an author by id
- * @route   DELETE /api/authors/:id
- * @desc    Deletes an author
- * @returns 200 - { success: true, message: 'Author deleted successfully' }
- * @returns 404 - { success: false, error: 'Author not found' }
+ * @route DELETE /api/authors/:id
+ * @desc Deletes an author
+ * @returns 200 - author deleted successfully
+ * @returns 404 if author not found
  */
 router.delete('/:id', async (req, res, next: NextFunction) => {
   try {
