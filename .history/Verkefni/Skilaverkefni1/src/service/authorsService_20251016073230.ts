@@ -1,3 +1,4 @@
+import fs from 'node:fs';
 import { randomUUID } from 'node:crypto';
 import path from 'path';
 import { fileURLToPath } from 'url';

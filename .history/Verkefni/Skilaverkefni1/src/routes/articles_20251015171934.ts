@@ -16,7 +16,7 @@ const router = express.Router();
 /**
  * Get all articles
  * @route   GET /api/articles
- * @returns 200 - Article [] (may be empty)
+ * @returns 200 - { success: true, data: Article[] } (may be empty)
  * @returns 500 - via global error handler
  */
 router.get('/', async (_req, res, next: NextFunction) => {
@@ -35,8 +35,8 @@ router.get('/', async (_req, res, next: NextFunction) => {
  * Get article by ID
  * @route   GET /api/articles/:id
  * @desc    Returns an article by id
- * @returns 200 - { Article }
- * @returns 404 - { error: 'Article not found' }
+ * @returns 200 - { success: true, data: Article }
+ * @returns 404 - { success: false, error: 'Article not found' }
  */
 router.get(
   '/:id',
@@ -69,7 +69,7 @@ router.get(
  * Create a new article
  * @route   POST /api/articles
  * @desc    Creates a new article
- * @returns 201 - { Article }
+ * @returns returns a 201 when new article created
  * @returns 400 - via validation middleware (Zod)
  */
 router.post(
@@ -98,8 +98,8 @@ router.post(
  * Delete an article by id
  * @route   DELETE /api/articles/:id
  * @desc    Deletes an article
- * @returns 200 - { message: 'Article deleted successfully' }
- * @returns 404 - { error: 'Article not found' }
+ * @returns 200 - { success: true, message: 'Article deleted successfully' }
+ * @returns 404 - { success: false, error: 'Article not found' }
  */
 router.delete(
   '/:id',
@@ -116,7 +116,9 @@ router.delete(
           .json({ error: { status: 404, message: 'Article not found' } });
 
       //successfully deleted
-      return res.status(200).json({ message: 'Article deleted successfully' });
+      return res
+        .status(200)
+        .json({ success: true, message: 'Article deleted successfully' });
     } catch (error) {
       next(error);
     }

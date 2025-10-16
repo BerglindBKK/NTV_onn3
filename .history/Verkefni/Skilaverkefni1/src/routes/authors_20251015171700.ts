@@ -14,7 +14,7 @@ const router = express.Router();
 /**
  * Get all authors
  * @route   GET /api/authors
- * @returns 200 - Author[] (may be empty)
+ * @returns 200 - { success: true, data: Author[] } (may be empty)
  * @returns 500 - via global error handler
  */
 router.get('/', async (_req, res, next: NextFunction) => {
@@ -33,8 +33,8 @@ router.get('/', async (_req, res, next: NextFunction) => {
  * Get author by ID
  * @route   GET /api/authors/:id
  * @desc    Returns an author by id
- * @returns 200 - { Author }
- * @returns 404 - { error: 'Author not found' }
+ * @returns 200 - { success: true, data: Author }
+ * @returns 404 - { success: false, error: 'Author not found' }
  */
 router.get(
   '/:id',
@@ -102,7 +102,7 @@ router.get(
  * Create a new author
  * @route   POST /api/authors
  * @desc    Creates a new author
- * @returns 201 - { Author }
+ * @returns 201 - { success: true, data: Author }
  * @returns 400 - via validation middleware (Zod)
  */
 router.post(
@@ -131,8 +131,8 @@ router.post(
  * Delete an author by id
  * @route   DELETE /api/authors/:id
  * @desc    Deletes an author
- * @returns 200 - { message: 'Author deleted successfully' }
- * @returns 404 - { error: 'Author not found' }
+ * @returns 200 - { success: true, message: 'Author deleted successfully' }
+ * @returns 404 - { success: false, error: 'Author not found' }
  */
 router.delete(
   '/:id',
@@ -146,10 +146,12 @@ router.delete(
       if (!ok)
         return res
           .status(404)
-          .json({ error: { status: 404, message: 'Author not found' } });
+          .json({ success: false, error: 'Author not found' });
 
       //successfully deleted
-      return res.status(200).json({ message: 'Author deleted successfully' });
+      return res
+        .status(200)
+        .json({ success: true, message: 'Author deleted successfully' });
     } catch (error) {
       next(error);
     }

@@ -9,3 +9,7 @@ export const createArticlesSchema = z.object({
 export const idParamSchema = z.object({
   id: z.string().uuid(),
 });
+
+//   title: string, required, max 100 characters,
+//   content: string, min 10 characters,
+//   authorId: number, must be a positive number,

@@ -4,5 +4,29 @@
     "title": "article1",
     "content": "blablabla",
     "authorId": "1"
+  },
+  {
+    "id": "72bb9e1e-74ea-48bb-b3ef-25df711f8b65",
+    "title": "Lára og ljónsi far aí bíó",
+    "content": "Lára og ljónsi sjá lion king",
+    "authorId": "8964d4cb-2cc9-4b19-8e6f-7171a33c9c87"
+  },
+  {
+    "id": "46c22966-aa0f-4818-953d-66f713d55ceb",
+    "title": "Lára og ljónsi fara í sund",
+    "content": "Lára og ljónsi fara í vesturbæjarlaug, Ljónsi eyðir 2 dögum á ofninum",
+    "authorId": "8964d4cb-2cc9-4b19-8e6f-7171a33c9c87"
+  },
+  {
+    "id": "dfd4a5a3-088c-46f0-b4b7-55dc184ed928",
+    "title": "Orri óstöðvandi",
+    "content": "Leiðinlegasta bók í geiminum",
+    "authorId": "8964d4cb-2cc9-4b19-8e6f-7171a33c9c84"
+  },
+  {
+    "id": "1eba523e-7169-4cfc-88e6-5c883235be25",
+    "title": "Learning TypeScript",
+    "content": "Content with 10+ chars",
+    "authorId": "1f5c594f-5de9-4ea4-9c44-81c14e0538f6"
   }
 ]

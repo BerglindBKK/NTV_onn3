@@ -2,7 +2,7 @@
   {
     "id": "1",
     "name": "John Doe",
-    "email": "john@example.com",
+    "email": "john@example.com",,
     "bio": "Software developer and writer"
   },
   {
@@ -19,12 +19,6 @@
   },
   {
     "id": "a5602778-82ad-46e2-92f8-817999b80353",
-    "name": "Alice Johnson",
-    "email": "alice@example.com",
-    "bio": "Tech writer"
-  },
-  {
-    "id": "1f5c594f-5de9-4ea4-9c44-81c14e0538f6",
     "name": "Alice Johnson",
     "email": "alice@example.com",
     "bio": "Tech writer"
