@@ -3,5 +3,10 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
     "prettier": "^3.6.2"
+  },
+  "dependencies": {
+    "@types/supertest": "6.0.3",
+    "dotenv": "17.2.3",
+    "supertest": "7.1.4"
   }
 }
