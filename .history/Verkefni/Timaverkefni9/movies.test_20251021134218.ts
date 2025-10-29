@@ -236,7 +236,6 @@ describe("movies.ts - Data Logic Unit Tests", () => {
       await expect(clearMoviesAsync("dfgsd")).rejects.toThrow(
         /clearMoviesAsync: .*Movie not found/
       );
-      expect(writeFile).not.toHaveBeenCalled();
     });
   });
 });

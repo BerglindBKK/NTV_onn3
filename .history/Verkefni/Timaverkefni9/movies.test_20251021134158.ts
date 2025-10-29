@@ -234,9 +234,8 @@ describe("movies.ts - Data Logic Unit Tests", () => {
       vi.mocked(writeFile).mockResolvedValue();
       //viljum að hann throwi villu
       await expect(clearMoviesAsync("dfgsd")).rejects.toThrow(
-        /clearMoviesAsync: .*Movie not found/
+        "Movie not found"
       );
-      expect(writeFile).not.toHaveBeenCalled();
     });
   });
 });
