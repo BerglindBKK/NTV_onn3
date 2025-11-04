@@ -73,8 +73,8 @@ id SERIAL PRIMARY KEY,
 name VARCHAR(255) NOT NULL,
 birth_year INT CHECK (birth_year BETWEEN 1900 AND 2020),
 country VARCHAR(100),
-genre_specialty VARCHAR(100)
-);
+genre_speciality VARCHAR(100)
+)
 
 
 
@@ -91,7 +91,7 @@ title VARCHAR(255) NOT NULL,
 duration_seconds INT CHECK (duration_seconds > 0),
 track_number INT CHECK(track_number > 0),
 album_id INT
-);
+)
 
 
 
@@ -102,7 +102,7 @@ album_id INT
 CREATE TABLE genres(
 id SERIAL PRIMARY KEY,
 name VARCHAR(50) NOT NULL UNIQUE
-);
+)
 
 
 -- Exercise 1.5: Verify your tables
@@ -130,7 +130,7 @@ ADD COLUMN label VARCHAR(150);
 -- This should be a true/false value that defaults to false
 
 ALTER TABLE albums
-ADD COLUMN is_explicit BOOLEAN NOT NULL DEFAULT FALSE;
+ADD COLUMN is_explicit BOOLEAN NOT NULL DEFAULT FALSE
 
 -- Exercise 2.3: Add a column to artists
 -- Add a column called 'is_active' to the artists table
@@ -145,7 +145,7 @@ ADD COLUMN is_active BOOLEAN NOT NULL DEFAULT TRUE;
 --
 -- Hint: Use ALTER COLUMN with DROP NOT NULL
 ALTER TABLE songs
-ALTER COLUMN duration_seconds DROP NOT NULL;
+ALTER COLUMN duration_seconds DROP NOT NULL
 
 
 -- Exercise 2.5: Rename a column
@@ -162,13 +162,13 @@ RENAME COLUMN label TO record_label;
 
 -- Exercise 3.1: Select all albums
 -- Retrieve all information about every album in the database
-select * from albums;
+select * from albums
 
 
 
 -- Exercise 3.2: Count total albums
 -- How many albums are in the database?
-select count(*) AS total_albums from albums;
+select count(*) AS total_albums from albums 
 
 
 -- Exercise 3.3: Filter albums by year
@@ -196,7 +196,7 @@ ORDER BY rating DESC;
 -- Show the title, release year, and rating
 SELECT title, rating, release_year 
 FROM albums
-WHERE release_year BETWEEN 2010 AND 2019;
+WHERE release_year BETWEEN 2010 AND 2019
 
 
 -- Exercise 3.6: Top 10 best-selling albums
@@ -206,14 +206,14 @@ WHERE release_year BETWEEN 2010 AND 2019;
 SELECT title, sales_millions, release_year
 FROM albums
 ORDER BY sales_millions DESC 
-LIMIT(10);
+LIMIT(10)
 
 
 -- Exercise 3.7: Average album rating
 -- Calculate the average rating across all albums
 -- Round the result to 2 decimal places
 SELECT ROUND(AVG(rating),2) AS average_rating
-FROM ALBUMS;
+FROM ALBUMS
 
 
 -- Exercise 3.8: Count albums by decade
@@ -223,14 +223,14 @@ FROM ALBUMS;
 SELECT (release_year / 10) * 10 AS decade, COUNT(*) AS album_count
 FROM albums
 GROUP BY decade
-ORDER BY decade DESC;
+ORDER BY decade DESC
 
 
 -- Exercise 3.9: Albums with specific keywords
 -- Find all albums where the title contains the word 'Love' (case-insensitive)
 SELECT *
 FROM albums
-WHERE title LIKE '%love%';
+WHERE title LIKE '%love%'
 
 
 -- Exercise 3.10: Pagination
@@ -272,7 +272,7 @@ PRIMARY KEY (album_id, artist_id),
 
 FOREIGN KEY (album_id) REFERENCEs albums(id) ON DELETE CASCADE,
 FOREIGN KEY (artist_id) REFERENCES artists(id) ON DELETE CASCADE
-);
+)
 
 
 
@@ -290,16 +290,7 @@ FOREIGN KEY (artist_id) REFERENCES artists(id) ON DELETE CASCADE
 -- - artist_id must reference the id column in the artists table with cascade delete
 --
 -- Hint: Similar structure to album_artists table
-CREATE TABLE song_artists (
-song_id INT NOT NULL,
-artist_id INT NOT NULL,
-role VARCHAR(50),
 
-PRIMARY KEY (song_id, artist_id),
-
-FOREIGN KEY (song_id) REFERENCES songs(id) ON DELETE CASCADE,
-FOREIGN KEY (artist_id) REFERENCES artists(id) ON DELETE CASCADE
-);
 
 
 -- Exercise 4.3: Create the album_genres junction table
@@ -313,14 +304,7 @@ FOREIGN KEY (artist_id) REFERENCES artists(id) ON DELETE CASCADE
 -- - The combination of album_id and genre_id should be the primary key
 -- - album_id must reference albums table with cascade delete
 -- - genre_id must reference genres table with cascade delete
-CREATE TABLE album_genres (
-album_id INT NOT NULL,
-genre_id INT NOT NULL,
 
-PRIMARY KEY (album_id, genre_id),
-FOREIGN KEY (album_id) REFERENCES albums(id) ON DELETE CASCADE,
-FOREIGN KEY (genre_id) REFERENCES genres(id) ON DELETE CASCADE
-);
 
 
 -- Exercise 4.4: Create the reviews table
@@ -339,17 +323,7 @@ FOREIGN KEY (genre_id) REFERENCES genres(id) ON DELETE CASCADE
 -- - album_id must reference the albums table with cascade delete
 --
 -- Hint: Use TEXT for long text, DATE for dates, DEFAULT CURRENT_DATE for automatic date
-CREATE TABLE reviews (
-id SERIAL PRIMARY KEY,
-album_id INT NOT NULL,
-reviewer_name VARCHAR(255) NOT NULL,
-rating INT NOT NULL CHECK (rating BETWEEN 1 AND 5),
-review_text TEXT,
-review_date DATE NOT NULL DEFAULT CURRENT_DATE,
-helpful_count INT NOT NULL DEFAULT 0 CHECK (helpful_count >= 0),
 
-FOREIGN KEY (album_id) REFERENCES albums(id) ON DELETE CASCADE
-);
 
 
 -- Exercise 4.5: Add foreign key to songs table
@@ -359,17 +333,13 @@ FOREIGN KEY (album_id) REFERENCES albums(id) ON DELETE CASCADE
 -- When an album is deleted, automatically delete its songs
 --
 -- Hint: Use ALTER TABLE...ADD CONSTRAINT...FOREIGN KEY
-ALTER TABLE songs 
-ADD CONSTRAINT fk_songs_album
-FOREIGN KEY (album_id) REFERENCES albums(id) ON DELETE CASCADE;
+
 
 
 -- Exercise 4.6: Verify your schema
 -- List all your tables to confirm you now have 8 tables total
 -- Expected: albums, artists, songs, genres, album_artists, song_artists, album_genres, reviews
-SELECT table_name FROM information_schema.tables
-WHERE table_schema = 'public'
-ORDER BY table_name;
+
 
 
 -- ============================================
@@ -381,35 +351,23 @@ ORDER BY table_name;
 -- Exercise 5.1: Albums with their artists
 -- Show each album's title along with its artist's name
 -- You'll need to join three tables: albums, album_artists, and artists
-SELECT albums.title AS album_title, artists.name AS artist_name FROM albums
-JOIN album_artists ON albums.id = album_artists.album_id
-JOIN artists ON artists.id = album_artists.artist_id
-ORDER BY artist_name, album_title;
+
 
 
 -- Exercise 5.2: Songs with their album titles
 -- Show each song's title along with the album title it belongs to
-SELECT songs.title AS song_title, albums.title AS album_title FROM albums
-JOIN songs  ON albums.id=songs.album_id
-ORDER BY album_title, song_title;
+
 
 
 -- Exercise 5.3: Albums with their genres
 -- Show each album's title along with its genre name
 -- You'll need to join three tables
-SELECT albums.title as album_title, genres.name AS genre_name from albums
-JOIN album_genres ON albums.id = album_genres.album_id
-JOIN genres ON genres.id = album_genres.genre_id
-ORDER BY album_title, genre_name;
+
 
 
 -- Exercise 5.4: Count albums per artist
 -- For each artist, show their name and how many albums they have
 -- Sort by the artists with the most albums first
-SELECT artists.name AS artist_name, count(album_artists.album_id) AS total_albums FROM artists
-JOIN album_artists ON artists.id = album_artists.artist_id
-GROUP BY artists.name
-ORDER BY total_albums DESC, artist_name;
 
 
 
@@ -417,10 +375,6 @@ ORDER BY total_albums DESC, artist_name;
 -- For each album, show the album title and how many songs it has
 -- Include albums even if they don't have any songs yet
 -- Group by album title
-SELECT albums.title AS album_title, count(songs.id) AS count_songs FROM albums
-LEFT JOIN songs ON songs.album_id = albums.id
-GROUP BY albums.title
-ORDER BY count_songs DESC;
 
 
 
@@ -437,43 +391,29 @@ ORDER BY count_songs DESC;
 
 -- Exercise 6.1: Count loaded albums
 -- How many albums are now in the database? (Expected: ~30)
-SELECT count(*) FROM albums;
---  30 ok
+
 
 
 -- Exercise 6.2: Count loaded artists
 -- How many artists are now in the database? (Expected: ~15)
-SELECT count(*) FROM artists;
--- 15 ok
+
 
 
 -- Exercise 6.3: Count loaded songs
 -- How many songs are now in the database? (Expected: ~50+)
-SELECT count(*) FROM songs;
--- 43 (ok?)
+
 
 
 -- Exercise 6.4: Verify highest-rated album
 -- Which album has the highest rating? Show its title, rating, and release year
-SELECT rating, title, release_year FROM albums
-ORDER BY rating DESC LIMIT(1);
--- 9.6	"Kind of Blue"	1959
+
+
 
 -- Exercise 6.5: View sample data
 -- Display 5 albums showing the album title, artist name, and genre name together
 -- This verifies the relationships are working correctly
-SELECT albums.title AS album_title, artists.name AS artist_name, genres.name AS genre_name
-FROM albums
-JOIN album_artists ON album_artists.album_id = albums.id
-JOIN artists       ON artists.id = album_artists.artist_id
-JOIN album_genres  ON album_genres.album_id = albums.id
-JOIN genres        ON genres.id = album_genres.genre_id
-LIMIT 5;
---"Abbey Road"	"The Beatles"	"Rock"
---"Sgt. Pepper's Lonely Hearts Club Band"	"The Beatles"	"Rock"
---"Revolver"	"The Beatles"	"Rock"
---"The Dark Side of the Moon"	"Pink Floyd"	"Progressive Rock"
---"The Wall"	"Pink Floyd"	"Progressive Rock"
+
+
 
 -- ============================================
 -- SECTION 7: Multi-Table JOINs
@@ -484,39 +424,19 @@ LIMIT 5;
 -- Album title, release year, rating, all artist names as one comma-separated string,
 -- and all genre names as one comma-separated string
 
-SELECT
-  albums.title AS album_title, albums.release_year, albums.rating AS album_rating,
-STRING_AGG(DISTINCT artists.name, ', ' ORDER BY artists.name) AS artist_names,
-STRING_AGG(DISTINCT genres.name, ', ' ORDER BY genres.name)   AS genre_names
-FROM albums
-JOIN album_artists ON album_artists.album_id = albums.id
-JOIN artists       ON artists.id = album_artists.artist_id
-JOIN album_genres  ON album_genres.album_id = albums.id
-JOIN genres        ON genres.id = album_genres.genre_id
-GROUP BY albums.id, albums.title, albums.release_year, albums.rating
-ORDER BY albums.release_year DESC
-LIMIT 10;
+
 
 -- Exercise 7.2: Artist discography
 -- Find all albums by The Beatles (or another artist of your choice)
 -- Show the artist name, album title, release year, and rating
 -- Sort chronologically by release year
-SELECT artists.name AS artist_name, albums.title AS album_title, albums.release_year AS release_year, albums.rating as album_rating
-FROM albums 
-JOIN album_artists ON album_artists.album_id = albums.id
-JOIN artists ON artists.id  = album_artists.artist_id
-WHERE artists.name = 'The Beatles'
-ORDER BY release_year;
+
 
 
 -- Exercise 7.3: Songs from an album
 -- Display all songs from the album "Abbey Road" (or another album of your choice)
 -- Show the song title, track number, and duration in seconds
 -- Sort by track number
-SELECT songs.title as song_title, songs.track_number AS track_number, songs.duration_seconds AS song_duration FROM songs
-JOIN albums ON songs.album_id = albums.id
-WHERE albums.title = 'Abbey Road'
-ORDER BY track_number;
 
 
 
@@ -524,29 +444,14 @@ ORDER BY track_number;
 -- Find all Rock albums (or another genre of your choice)
 -- Display the album title, release year, artist name, and rating
 -- Sort by highest rating first
-SELECT albums.title, albums.release_year, artists.name, albums.rating
-FROM albums
-JOIN album_artists ON albums.id = album_artists.album_id
-JOIN artists ON artists.id = album_artists.artist_id
-JOIN album_genres ON albums.id = album_genres.album_id
-JOIN genres ON genres.id = album_genres.genre_id
-WHERE genres.name = 'Rock'
-ORDER BY albums.rating DESC;
+
 
 
 -- Exercise 7.5: Artists who work in multiple genres
 -- Which artists have albums in 2 or more different genres?
 -- Show the artist name and count of distinct genres they work in
 -- Sort by artists with the most genre diversity first
-SELECT artists.name, count(DISTINCT genres.id) AS total_genres
-FROM artists
-JOIN album_artists ON artists.id = album_artists.artist_id
-JOIN albums ON album_artists.album_id = albums.id
-JOIN album_genres ON albums.id = album_genres.album_id
-JOIN genres ON genres.id = album_genres.genre_id
-GROUP BY artists.name
-HAVING COUNT(DISTINCT genres.id) > 1
-ORDER BY total_genres DESC;
+
 
 
 -- ============================================
@@ -557,11 +462,6 @@ ORDER BY total_genres DESC;
 -- For each genre, show the genre name, average album rating (2 decimals),
 -- and count of albums in that genre
 -- Sort by highest average rating first
-SELECT genres.name, ROUND(avg(albums.rating),2) AS average_rating, count(albums.id) AS albums_cound FROM albums
-JOIN album_genres ON album_genres.album_id = albums.id
-JOIN genres ON album_genres.genre_id = genres.id
-GROUP BY genres.name
-ORDER BY average_rating DESC;
 
 
 
@@ -569,41 +469,20 @@ ORDER BY average_rating DESC;
 -- Find the 10 artists who have released the most albums
 -- Show the artist name, how many albums they have, and their average album rating
 -- Sort by most albums first
-SELECT artists.name, count(albums.id) AS count_albums, round(avg(albums.rating), 2) AS album_rating
-FROM artists
-JOIN album_artists on album_artists.artist_id = artists.id
-JOIN albums ON album_artists.album_id = albums.id
-GROUP BY artists.name
-ORDER BY count_albums DESC
-LIMIT 10;
+
 
 
 -- Exercise 8.3: Albums with review statistics
 -- For albums that have reviews, show the album title, average review rating (2 decimals),
 -- and count of reviews
 -- Show the top 10 by average review rating
-SELECT albums.title, round(avg(reviews.rating), 2) AS average_rating, count(reviews.id)
-FROM albums
-JOIN reviews ON reviews.album_id = albums.id
-GROUP BY albums.title
-ORDER BY average_rating desc
-LIMIT 10
+
+
 
 -- Exercise 8.4: Total sales by artist
 -- Calculate the total sales across all albums for each artist
 -- Show the artist name, total sales in millions, and number of albums
 -- Sort by highest total sales first
--- Exercise 8.4: Total sales by artist
--- Calculate the total sales across all albums for each artist
--- Show the artist name, total sales in millions, and number of albums
--- Sort by highest total sales first
-
-SELECT artists.name, sum(albums.sales_millions) as sales_sum, count(albums.id) as total_albums
-FROM artists
-JOIN album_artists ON album_artists.artist_id = artists.id
-JOIN albums ON album_artists.album_id = albums.id
-GROUP BY artists.name
-ORDER BY sales_sum DESC
 
 
 
@@ -611,11 +490,7 @@ ORDER BY sales_sum DESC
 -- For each decade (1960s, 1970s, etc.), calculate:
 -- The decade, count of albums released, average rating, and total sales
 -- Sort by most recent decade first
-SELECT (albums.release_year/10)*10 as decade, count(albums.id) as album_count,
-round(avg(albums.rating), 2) as avg_rating, round(sum(albums.sales_millions),2) AS total_sales_mill
-FROM albums
-GROUP BY decade
-ORDER BY decade DESC;
+
 
 
 -- ============================================
@@ -626,63 +501,34 @@ ORDER BY decade DESC;
 -- Find albums that have both a high rating (8.0 or higher) AND at least 10 songs
 -- Show the album title, rating, song count, and artist name
 -- Sort by highest rating first
-SELECT albums.title, albums.rating, count(DISTINCT songs.id) as song_count, artists.name
-FROM albums
-JOIN album_artists ON albums.id = album_artists.album_id
-JOIN artists ON artists.id = album_artists.artist_id
-JOIN songs ON albums.id = songs.album_id
-WHERE albums.rating > 8.0 
-GROUP BY albums.title, albums.rating, artists.name
-HAVING COUNT(DISTINCT songs.id) >= 10
-ORDER BY albums.rating DESC
+
 
 
 -- Exercise 9.2: Artists with no albums in certain genres
 -- Find all artists who have never released a Pop album (or choose another genre)
 -- Show just the artist names
-SELECT artists.name
-FROM artists
-WHERE NOT EXISTS (
-SELECT 1 
-FROM album_artists
-JOIN album_genres ON album_genres.album_id = album_artists.album_id
-JOIN genres ON genres.id = album_genres.genre_id
-WHERE album_artists.artist_id = artists.id
-AND genres.name = 'Pop'
-)
-ORDER BY artists.name;
+
+
 
 -- Exercise 9.3: Albums with above-average ratings
 -- Find all albums that have a rating higher than the average across all albums
 -- Show the title, rating, and how much higher it is than average (as "difference")
 -- Sort by highest rating first
-SELECT title, rating, ROUND(rating - (SELECT AVG(rating) FROM albums), 2) AS diff
-FROM albums
-WHERE rating - (SELECT AVG(rating) FROM albums) > 0
-ORDER BY diff DESC;
+
+
 
 -- Exercise 9.4: Most reviewed albums
 -- Which albums have received the most reviews?
 -- Show the album title, count of reviews, and average review rating
 -- Show the top 10
-SELECT albums.title , COUNT(reviews.id) AS review_count, ROUND(AVG(reviews.rating), 2) as avg_rev_rating
-FROM albums
-JOIN reviews ON reviews.album_id = albums.id
-GROUP BY albums.title
-ORDER BY review_count DESC, avg_rev_rating DESC
+
 
 
 -- Exercise 9.5: Genre popularity by decade
 -- For albums released in the 2010s (2010-2019), which genre was most popular?
 -- Show the genre name, count of albums, and average rating
 -- Sort by most albums first
-SELECT genres.name, COUNT(albums.id) as album_count, ROUND(avg(albums.rating), 2) AS avg_rating
-FROM albums
-JOIN album_genres ON album_genres.album_id = albums.id
-JOIN genres ON genres.id = album_genres.genre_id
-WHERE albums.release_year BETWEEN 2010 AND 2019
-GROUP BY genres.name
-ORDER BY album_count DESC, avg_rating DESC
+
 
 
 -- ============================================
@@ -694,13 +540,7 @@ ORDER BY album_count DESC, avg_rating DESC
 -- Return the top 10 Rock albums with rating 8.0 or higher
 -- Show: album id, title, rating, release_year
 -- Sort by highest rating first
-SELECT albums.id, albums.title, albums.rating, albums.release_year
-FROM albums
-JOIN album_genres ON album_genres.album_id = albums.id
-JOIN genres on genres.id = album_genres.genre_id
-WHERE genres.name = 'Rock' AND albums.rating >= 8.0
-ORDER BY albums.rating DESC
-LIMIT 10
+
 
 
 -- Exercise 10.2: GET /albums/:id with full details
@@ -709,35 +549,7 @@ LIMIT 10
 -- All album information (title, year, rating, sales, etc.) PLUS
 -- a comma-separated list of artist names, a comma-separated list of genres,
 -- a comma-separated list of song titles, the count of reviews, and average review rating
--- Exercise 10.2: GET /albums/:id with full details
--- Simulate an API endpoint that returns complete album details
--- Pick any album from your database and show:
--- All album information (title, year, rating, sales, etc.) PLUS
--- a comma-separated list of artist names, a comma-separated list of genres,
--- a comma-separated list of song titles, the count of reviews, and average review rating
 
--- Exercise 10.2: GET /albums/:id with full details
--- Simulate an API endpoint that returns complete album details
--- Pick any album from your database and show:
--- All album information (title, year, rating, sales, etc.) PLUS
--- a comma-separated list of artist names, a comma-separated list of genres,
--- a comma-separated list of song titles, the count of reviews, and average review rating
-
-SELECT a.id, a.title, a.release_year, a.rating, a.sales_millions, a.record_label, a.is_explicit,
-STRING_AGG(DISTINCT artists.name, ', ') AS artist_names,
-STRING_AGG(DISTINCT genres.name, ', ') AS genre_names,
-STRING_AGG(DISTINCT songs.title, ', ') AS song_titles,
-COUNT(DISTINCT reviews.id) AS review_count,
-ROUND(AVG(reviews.rating), 2) AS avg_review_rating
-FROM albums a
-LEFT JOIN album_artists ON album_artists.album_id = a.id
-LEFT JOIN artists ON artists.id = album_artists.artist_id
-LEFT JOIN album_genres ON album_genres.album_id = a.id
-LEFT JOIN genres ON genres.id = album_genres.genre_id
-LEFT JOIN songs ON songs.album_id = a.id
-LEFT JOIN reviews ON reviews.album_id = a.id
-WHERE a.id = 1
-group by a.id
 
 
 -- Exercise 10.3: GET /artists/:id/albums
@@ -745,16 +557,7 @@ group by a.id
 -- Pick any artist from your database and show all their albums with:
 -- Album title, release year, rating, sales in millions, and genres (comma-separated)
 -- Sort by most recent first
-SELECT a.title, a.release_year, a.rating, a.sales_millions,
-STRING_AGG(DISTINCT genres.name, ', ' ORDER BY genres.name) AS genres
-FROM albums a
-JOIN album_artists ON album_artists.album_id = a.id
-JOIN artists ON artists.id = album_artists.artist_id
-LEFT JOIN album_genres ON album_genres.album_id = a.id
-LEFT JOIN genres ON genres.id = album_genres.genre_id
-WHERE artists.name = 'The Beatles'
-GROUP BY a.id, a.title, a.release_year, a.rating, a.sales_millions
-ORDER BY a.release_year DESC;
+
 
 
 -- Exercise 10.4: Search functionality

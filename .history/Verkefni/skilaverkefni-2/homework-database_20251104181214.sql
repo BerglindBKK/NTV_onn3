@@ -716,21 +716,14 @@ LIMIT 10
 -- a comma-separated list of artist names, a comma-separated list of genres,
 -- a comma-separated list of song titles, the count of reviews, and average review rating
 
--- Exercise 10.2: GET /albums/:id with full details
--- Simulate an API endpoint that returns complete album details
--- Pick any album from your database and show:
--- All album information (title, year, rating, sales, etc.) PLUS
--- a comma-separated list of artist names, a comma-separated list of genres,
--- a comma-separated list of song titles, the count of reviews, and average review rating
-
 SELECT a.id, a.title, a.release_year, a.rating, a.sales_millions, a.record_label, a.is_explicit,
 STRING_AGG(DISTINCT artists.name, ', ') AS artist_names,
-STRING_AGG(DISTINCT genres.name, ', ') AS genre_names,
-STRING_AGG(DISTINCT songs.title, ', ') AS song_titles,
-COUNT(DISTINCT reviews.id) AS review_count,
-ROUND(AVG(reviews.rating), 2) AS avg_review_rating
+  STRING_AGG(DISTINCT genres.name, ', ')  AS genre_names,
+  STRING_AGG(DISTINCT songs.title, ', ') AS song_titles,
+  COUNT(DISTINCT reviews.id)               AS review_count,
+  ROUND(AVG(reviews.rating), 2)            AS avg_review_rating
 FROM albums a
-LEFT JOIN album_artists ON album_artists.album_id = a.id
+LEFT JOIN album_artists ON album_artists.artist_id = a.id
 LEFT JOIN artists ON artists.id = album_artists.artist_id
 LEFT JOIN album_genres ON album_genres.album_id = a.id
 LEFT JOIN genres ON genres.id = album_genres.genre_id
@@ -740,21 +733,13 @@ WHERE a.id = 1
 group by a.id
 
 
+
 -- Exercise 10.3: GET /artists/:id/albums
 -- Simulate an API endpoint that returns all albums by a specific artist
 -- Pick any artist from your database and show all their albums with:
 -- Album title, release year, rating, sales in millions, and genres (comma-separated)
 -- Sort by most recent first
-SELECT a.title, a.release_year, a.rating, a.sales_millions,
-STRING_AGG(DISTINCT genres.name, ', ' ORDER BY genres.name) AS genres
-FROM albums a
-JOIN album_artists ON album_artists.album_id = a.id
-JOIN artists ON artists.id = album_artists.artist_id
-LEFT JOIN album_genres ON album_genres.album_id = a.id
-LEFT JOIN genres ON genres.id = album_genres.genre_id
-WHERE artists.name = 'The Beatles'
-GROUP BY a.id, a.title, a.release_year, a.rating, a.sales_millions
-ORDER BY a.release_year DESC;
+
 
 
 -- Exercise 10.4: Search functionality

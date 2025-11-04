@@ -745,16 +745,7 @@ group by a.id
 -- Pick any artist from your database and show all their albums with:
 -- Album title, release year, rating, sales in millions, and genres (comma-separated)
 -- Sort by most recent first
-SELECT a.title, a.release_year, a.rating, a.sales_millions,
-STRING_AGG(DISTINCT genres.name, ', ' ORDER BY genres.name) AS genres
-FROM albums a
-JOIN album_artists ON album_artists.album_id = a.id
-JOIN artists ON artists.id = album_artists.artist_id
-LEFT JOIN album_genres ON album_genres.album_id = a.id
-LEFT JOIN genres ON genres.id = album_genres.genre_id
-WHERE artists.name = 'The Beatles'
-GROUP BY a.id, a.title, a.release_year, a.rating, a.sales_millions
-ORDER BY a.release_year DESC;
+
 
 
 -- Exercise 10.4: Search functionality
