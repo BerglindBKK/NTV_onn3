@@ -31,7 +31,8 @@
 -- ============================================
 -- PART 1: BUILD YOUR MUSIC DATABASE
 -- ============================================
---CREATE DATABASE music_homework;
+CREATE DATABASE music_homework;
+
 -- ============================================
 -- SECTION 1: Create Core Tables
 -- ============================================
