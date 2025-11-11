@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "rootDir": "src",
+    "outDir": "dist"
+  },
+  "include": ["src", "**/*.{test,spec}.?(c|m)[jt]s?(x)", "src/models/tests/categoryModel.test.ts"],
+  "exclude": ["node_modules", "dist"]
+}

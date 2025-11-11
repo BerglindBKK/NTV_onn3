@@ -1,0 +1,30 @@
+{
+  "name": "lesson14",
+  "version": "1.0.0",
+  "description": "Movie Watchlist API",
+  "main": "server.ts",
+  "author": "",
+  "license": "ISC",
+  "scripts": {
+    "dev": "nodemon --exec tsx src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "test": "vitest run"
+  },
+  "type": "module",
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "pg-promise": "^12.2.0",
+    "tsx": "^4.20.6",
+    "vitest": "^4.0.8"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.5",
+    "@types/node": "^24.10.0",
+    "@types/pg": "^8.15.6",
+    "nodemon": "^3.1.10",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}
