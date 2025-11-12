@@ -79,23 +79,3 @@ suite("createMovie", async () => {
     await expect(createMovie(movie)).rejects.toThrow("error");
   });
 });
-
-// test("createCategory with empty string", async () => {
-//   const categoryEmptyString: Category = {
-//     name: "",
-//   };
-
-//   await expect(createCategory(categoryEmptyString)).rejects.toThrow(
-//     'error: new row for relation "categories" violates check constraint "categories_name_check"'
-//   );
-// });
-
-// test("createCategory with duplicate category  ", async () => {
-//   const category: Category = {
-//     name: "Avatar",
-//   };
-
-//   await expect(createCategory(category)).rejects.toThrow(
-//     'error: duplicate key value violates unique constraint "categories_pkey"'
-//   );
-// });

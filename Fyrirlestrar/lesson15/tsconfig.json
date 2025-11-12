@@ -9,6 +9,6 @@
     "rootDir": "src",
     "outDir": "dist"
   },
-  "include": ["src", "**/*.{test,spec}.?(c|m)[jt]s?(x)", "src/models/tests/categoryModel.test.ts"],
+  "include": ["src", "**/*.{test,spec}.?(c|m)[jt]s?(x)", "src/models/tests/mModel.test.ts"],
   "exclude": ["node_modules", "dist"]
 }
