@@ -1,4 +1,4 @@
-import pool from "../config/db.js";
+import { db } from "../config/db.js";
 
 export interface Cuisine {
   id: number;
@@ -6,15 +6,26 @@ export interface Cuisine {
 }
 
 export const getAllCuisines = async (): Promise<Cuisine[]> => {
-  const result = await pool.query("SELECT *FROM cuisines");
-  console.log("Cuisines fetched from database:", result);
-  return result;
+  // pg-promise returns rows directly
+  const rows = await db.any<Cuisine>(
+    "SELECT id, name FROM cuisines ORDER BY id"
+  );
+  console.log("Cuisines fetched from database:", rows);
+  return rows;
 };
 
 export const createCuisine = async (name: string): Promise<Cuisine[]> => {
-  const result = await pool.query(
-    "INSERT INTO cuisines (name) VALUES ($1) RETURNING *",
+  // returns exactly one row
+  const row = await db.one(
+    "INSERT INTO cuisines (name) VALUES ($1) RETURNING id, name",
     [name]
   );
-  return result;
+  return row;
+};
+
+export const deleteCuisine = async (id: number): Promise<boolean> => {
+  //deletes row
+  const result = await db.result("DELETE FROM cuisines WHERE id = $1", [id]);
+  //true if at least one was deleted. If no id matched that id - row count is 0
+  return result.rowCount > 0;
 };

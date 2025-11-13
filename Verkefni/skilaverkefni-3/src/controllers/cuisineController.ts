@@ -1,30 +1,74 @@
 import { Request, Response } from "express";
-import { createCuisine, getAllCuisines } from "../models/cuisineModel";
+import {
+  createCuisine,
+  getAllCuisines,
+  deleteCuisine,
+} from "../models/cuisineModel";
 // import { getAllMovies, createMovie } from '../models/movieModel.js';
 
-export const getCuisines = async (
+//get all cuisines
+export const getAllCuisinesController = async (
   req: Request,
   res: Response
 ): Promise<void> => {
   try {
     const cuisines = await getAllCuisines();
-    res.json(cuisines);
+    res.status(200).json(cuisines);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Failed to fetch cuisines: " + error });
   }
 };
 
+//create a cuisine
 export const createCuisineController = async (
   req: Request,
   res: Response
 ): Promise<void> => {
   try {
-    const { name } = req.body;
-    const response = await createCuisine(name);
-    res.json(response);
+    // At this point, Zod has already validated req.body
+    const { name } = req.body as { name: string };
+
+    //fetches the created cuisine and displays it with 201
+    const created = await createCuisine(name.trim());
+    res.status(201).json(created);
+  } catch (error: any) {
+    // Handle duplicate name (Postgres unique constraint)
+    if (error?.code === "23505") {
+      res.status(400).json({
+        error: "Cuisine already exists",
+        message: `Cuisine with name '${req.body?.name}' already exists`,
+      });
+      return;
+    }
+    console.error(error);
+    res.status(500).json({
+      error: "Failed to fetch cuisines",
+    });
+  }
+};
+
+export const deleteCuisineController = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const id = Number(req.params.id);
+    if (isNaN(id)) {
+      res.status(400).json({ error: "Invalid cuisine ID" });
+      return;
+    }
+
+    //tries to delete via model
+    const ok = await deleteCuisine(id);
+
+    if (!ok) {
+      res.status(404).json({ error: "Cuisine not found" });
+      return;
+    }
+    res.status(204).send();
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Failed to create cuisine: " + error });
+    res.status(500).json({ error: "Failed to delete cuisine" });
   }
 };

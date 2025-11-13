@@ -1,17 +1,21 @@
+//src/app.ts
+//core Express setup for the whole API
+//It creates the app, adds middleware, attaches routes, and then exports it so the server can start it.
+
+// tools to create an HTTP server, handle routes (GET, POST, etc.)
 import express from "express";
-import { db } from "./config/db.js";
+//Imports the router that contains all the endpoints
 import cuisineRoutes from "./routes/cuisineRoutes.js";
-// import recipesRoutes from "./routes/recipesRoutes.js";
+import { errorHandler } from "./middleware/errorHandler.js";
+//creates a new Express application instance
 const app = express();
 
+//adds middleware that automatically parses JSON request bodies (req.body)
 app.use(express.json());
+
+//GET /api/cuisines → goes to the getCuisines function
 app.use("/api/cuisines", cuisineRoutes);
-// app.use("/api/recipes", recipesRoutes);
+
+app.use(errorHandler);
 
 export default app;
-
-// test route just to confirm everything works
-// app.get("/", async (req, res) => {
-//   const result = await db.one("SELECT current_database()");
-//   res.json({ message: "API is running!", database: result.current_database });
-// });
