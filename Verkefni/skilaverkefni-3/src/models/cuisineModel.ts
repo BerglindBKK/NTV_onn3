@@ -14,7 +14,28 @@ export const getAllCuisines = async (): Promise<Cuisine[]> => {
   return rows;
 };
 
-export const createCuisine = async (name: string): Promise<Cuisine[]> => {
+export const getCuisineById = async (id: number): Promise<Cuisine | null> => {
+  const cuisine = await db.oneOrNone(
+    "SELECT id, name FROM cuisines WHERE id = $1",
+    [id]
+  );
+  return cuisine;
+};
+
+export const updateCuisine = async (
+  id: number,
+  name: string
+): Promise<Cuisine | null> => {
+  // console.log("id:", id, "name:", name);
+  const cuisine = await db.oneOrNone<Cuisine>(
+    "UPDATE cuisines SET name = $1 WHERE id=$2 RETURNING id,name",
+    [name, id]
+  );
+  // console.log("id:", id, "name:", name);
+  return cuisine;
+};
+
+export const createCuisine = async (name: string): Promise<Cuisine> => {
   // returns exactly one row
   const row = await db.one(
     "INSERT INTO cuisines (name) VALUES ($1) RETURNING id, name",
