@@ -108,6 +108,51 @@ export const createRecipe = async (data: RecipeInput): Promise<Recipe> => {
   return recipeWithCuisine;
 };
 
+// updates a recipe
+export const updateRecipe = async (
+  id: number,
+  data: RecipeInput
+): Promise<Recipe> => {
+  // takes id from the user, selects every field of the corresponding row and remembers as existing
+  const existing = await db.one<Recipe>("SELECT * FROM recipes WHERE id = $1", [
+    id,
+  ]);
+
+  // checks if the user entered new data, if yes - use it, if not - then use the existing data field and stores the new data
+  const updatedData = {
+    title: data.title ?? existing.title,
+    description: data.description ?? existing.description,
+    cook_time_minutes: data.cook_time_minutes ?? existing.cook_time_minutes,
+    difficulty: data.difficulty ?? existing.difficulty,
+    rating: data.rating ?? existing.rating,
+    cuisine_id: data.cuisine_id ?? existing.cuisine_id,
+  };
+
+  // replaces every field of the row with the updatead data (some information can/will remain the same) and returns to the controller
+  // created timestamp remains the same
+  const updated = await db.one<Recipe>(
+    `UPDATE recipes SET
+     title = $1,
+     description = $2,
+     cook_time_minutes = $3,
+     difficulty = $4,
+     rating = $5,
+     cuisine_id = $6
+   WHERE id = $7
+   RETURNING *`,
+    [
+      updatedData.title,
+      updatedData.description,
+      updatedData.cook_time_minutes,
+      updatedData.difficulty,
+      updatedData.rating,
+      updatedData.cuisine_id,
+      id,
+    ]
+  );
+  return updated;
+};
+
 // deletes a recipe by id
 // function returns true if at least one row was deleted.
 // If no id matched that id - row count is 0

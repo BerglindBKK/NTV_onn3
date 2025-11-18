@@ -3,7 +3,7 @@ import {
   getAllRecipesController,
   getRecipeByIdController,
   createRecipeController,
-  //   updateRecipeController,
+  updateRecipeController,
   deleteRecipeController,
 } from "../controllers/recipeController.js";
 import { validate } from "../middleware/validate.js";
@@ -13,7 +13,7 @@ const router = express.Router();
 
 router.get("/", getAllRecipesController);
 router.get("/:id", getRecipeByIdController);
-// router.put("/:id", updateRecipeController);
+router.put("/:id", updateRecipeController);
 // router.post("/", createRecipeController);
 router.post("/", validate(recipeSchema), createRecipeController);
 router.delete("/:id", deleteRecipeController);
