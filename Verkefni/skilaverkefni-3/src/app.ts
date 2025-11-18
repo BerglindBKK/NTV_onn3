@@ -6,6 +6,7 @@
 import express from "express";
 //Imports the router that contains all the endpoints
 import cuisineRoutes from "./routes/cuisineRoutes.js";
+import recipeRoutes from "./routes/recipeRoutes.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 //creates a new Express application instance
 const app = express();
@@ -15,6 +16,7 @@ app.use(express.json());
 
 //GET /api/cuisines → goes to the getCuisines function
 app.use("/api/cuisines", cuisineRoutes);
+app.use("/api/recipes", recipeRoutes);
 
 app.use(errorHandler);
 
