@@ -181,3 +181,24 @@ export const deleteRecipe = async (id: number): Promise<boolean> => {
   const result = await db.result("DELETE FROM recipes WHERE id = $1", [id]);
   return result.rowCount > 0;
 };
+
+// searches for recipes after name or description
+export const searchRecipes = async (q: string): Promise<Recipe[]> => {
+  return db.any(
+    `SELECT 
+        r.id,
+        r.title,
+        r.description,
+        r.cook_time_minutes,
+        r.difficulty,
+        r.rating,
+        r.cuisine_id,
+        c.name AS cuisine_name
+        FROM recipes r
+     JOIN cuisines c ON r.cuisine_id = c.id
+     WHERE r.title ILIKE $1
+        OR r.description ILIKE $1
+        OR c.name ILIKE $1`,
+    [`%${q}%`]
+  );
+};

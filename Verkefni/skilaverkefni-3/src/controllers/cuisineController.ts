@@ -59,8 +59,8 @@ export const getAllRecipesByCuisineController = async (
     }
     const recipes = await getRecipesByCuisineId(id);
     console.log("eru hér uppskriftir góðan daginn? : ", recipes);
-    if (!recipes) {
-      res.status(404).json({ error: "Recipies not found" });
+    if (recipes.length === 0) {
+      res.status(404).json({ error: "Cuisine not found" });
       return;
     }
     res.status(200).json(recipes);

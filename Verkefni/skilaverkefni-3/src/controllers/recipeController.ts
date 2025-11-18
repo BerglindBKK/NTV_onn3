@@ -5,6 +5,7 @@ import {
   deleteRecipe,
   getRecipeById,
   updateRecipe,
+  searchRecipes,
 } from "../models/recipeModel";
 
 //get recipe by id
@@ -114,5 +115,28 @@ export const deleteRecipeController = async (
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Failed to delete recipe" });
+  }
+};
+
+//search for  recipes
+export const searchRecipesController = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const q = req.query.q as string;
+    //checks if query is empty
+    if (!q || q.trim() == "") {
+      res.status(400).json({ error: "Search query is required" });
+      return;
+    }
+
+    //return found recipes wrapped in an array
+    const recipes = await searchRecipes(q);
+    console.log("SEARCH ROUTE HIT. q =", q);
+    res.status(200).json({ recipes });
+  } catch (error: any) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to search recipes" });
   }
 };
