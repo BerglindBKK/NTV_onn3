@@ -2,6 +2,7 @@ import express from "express";
 import {
   getAllCuisinesController,
   getCuisineByIdController,
+  getAllRecipesByCuisineController,
   createCuisineController,
   updateCuisineController,
   deleteCuisineController,
@@ -13,6 +14,7 @@ const router = express.Router();
 
 router.get("/", getAllCuisinesController);
 router.get("/:id", getCuisineByIdController);
+router.get("/:id/recipes", getAllRecipesByCuisineController);
 router.put("/:id", validate(cuisineSchema), updateCuisineController);
 router.post("/", validate(cuisineSchema), createCuisineController);
 router.delete("/:id", deleteCuisineController);

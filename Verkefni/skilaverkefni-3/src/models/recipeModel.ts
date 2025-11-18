@@ -45,6 +45,27 @@ export const getRecipeById = async (id: number): Promise<Recipe | null> => {
   );
 };
 
+// fetches one specific recipe by id and returns (one row) in the shape of Recipe or none
+// joins cuisine table and adds cusine name to the recipe results
+export const getRecipesByCuisineId = async (id: number): Promise<Recipe[]> => {
+  return db.any(
+    `SELECT 
+        r.id,
+        r.title,
+        r.description,
+        r.cook_time_minutes,
+        r.difficulty,
+        r.rating,
+        r.created_at,
+        r.cuisine_id,
+        c.name AS cuisine_name
+     FROM recipes r
+     JOIN cuisines c ON r.cuisine_id = c.id
+     WHERE r.cuisine_id = $1`,
+    [id]
+  );
+};
+
 // fetches all recipes
 // joins the tables and fetchs cuisine name and adds it to Recipe
 // returns an array of Recipes (many lines)

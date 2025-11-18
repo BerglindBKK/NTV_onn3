@@ -6,7 +6,7 @@ import {
   getCuisineById,
   updateCuisine,
 } from "../models/cuisineModel";
-// import { getAllMovies, createMovie } from '../models/movieModel.js';
+import { getRecipesByCuisineId } from "../models/recipeModel";
 
 //get all cuisines
 export const getAllCuisinesController = async (
@@ -46,6 +46,38 @@ export const getCuisineByIdController = async (
     res.status(500).json({ error: "Failed to fetch cuisine" });
   }
 };
+
+export const getAllRecipesByCuisineController = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const id = Number(req.params.id);
+    if (isNaN(id)) {
+      res.status(400).json({ error: "Invalid cuisine ID" });
+      return;
+    }
+    const recipes = await getRecipesByCuisineId(id);
+    console.log("eru hér uppskriftir góðan daginn? : ", recipes);
+    if (!recipes) {
+      res.status(404).json({ error: "Recipies not found" });
+      return;
+    }
+    res.status(200).json(recipes);
+  } catch (error: any) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to fetch recipes" });
+  }
+};
+
+// export const getAllRecipesByCuisineController = async (
+//   req: Request,
+//   res: Response
+// ): Promise<void> => {
+//   try {
+//     const id = Number(req.params.id);
+//   } catch (error: any) {}
+// };
 
 export const updateCuisineController = async (
   req: Request,
