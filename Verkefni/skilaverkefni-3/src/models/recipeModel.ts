@@ -133,13 +133,16 @@ export const createRecipe = async (data: RecipeInput): Promise<Recipe> => {
 export const updateRecipe = async (
   id: number,
   data: RecipeInput
-): Promise<Recipe> => {
+): Promise<Recipe | null> => {
   // takes id from the user, selects every field of the corresponding row and remembers as existing
-  const existing = await db.one<Recipe>("SELECT * FROM recipes WHERE id = $1", [
-    id,
-  ]);
+  const existing = await db.oneOrNone<Recipe>(
+    "SELECT * FROM recipes WHERE id = $1",
+    [id]
+  );
 
-  // checks if the user entered new data, if yes - use it, if not - then use the existing data field and stores the new data
+  if (!existing) return null;
+
+  // merging data - checks if the user entered new data, if yes - use it, if not - then use the existing data field and stores the new data
   const updatedData = {
     title: data.title ?? existing.title,
     description: data.description ?? existing.description,
@@ -151,7 +154,7 @@ export const updateRecipe = async (
 
   // replaces every field of the row with the updatead data (some information can/will remain the same) and returns to the controller
   // created timestamp remains the same
-  const updated = await db.one<Recipe>(
+  const updated = await db.none(
     `UPDATE recipes SET
      title = $1,
      description = $2,
@@ -159,8 +162,7 @@ export const updateRecipe = async (
      difficulty = $4,
      rating = $5,
      cuisine_id = $6
-   WHERE id = $7
-   RETURNING *`,
+   WHERE id = $7`,
     [
       updatedData.title,
       updatedData.description,
@@ -171,7 +173,10 @@ export const updateRecipe = async (
       id,
     ]
   );
-  return updated;
+
+  //fetches the new recipe by its id  and returns it
+  const updatedRecipe = await getRecipeById(id);
+  return updatedRecipe;
 };
 
 // deletes a recipe by id
@@ -192,6 +197,7 @@ export const searchRecipes = async (q: string): Promise<Recipe[]> => {
         r.cook_time_minutes,
         r.difficulty,
         r.rating,
+        r.created_at, 
         r.cuisine_id,
         c.name AS cuisine_name
         FROM recipes r
