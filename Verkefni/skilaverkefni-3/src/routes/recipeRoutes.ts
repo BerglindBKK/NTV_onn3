@@ -8,7 +8,7 @@ import {
   searchRecipesController,
 } from "../controllers/recipeController.js";
 import { validate } from "../middleware/validate.js";
-import { recipeSchema } from "../schemas/recipeSchema.js";
+import { recipeSchema, recipeUpdateSchema } from "../schemas/recipeSchema.js";
 
 const router = express.Router();
 
@@ -32,11 +32,11 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
   return getAllRecipesController(req, res, next);
 });
 
-// router.get("/all", getAllRecipesController);
+// router.get
 router.get("/:id", getRecipeByIdController);
 
 //routes with body validated with schema
-router.put("/:id", validate(recipeSchema), updateRecipeController);
+router.put("/:id", validate(recipeUpdateSchema), updateRecipeController);
 router.post("/", validate(recipeSchema), createRecipeController);
 
 router.delete("/:id", deleteRecipeController);

@@ -66,12 +66,14 @@ export const getRecipesByCuisineId = async (id: number): Promise<Recipe[]> => {
   );
 };
 
-// fetches all recipes
+// fetches all recipes, paginated
 // joins the tables and fetchs cuisine name and adds it to Recipe
 // returns an array of Recipes (many lines)
-export const getAllRecipes = async (): Promise<
-  (Recipe & { cuisine_name: string })[]
-> => {
+export const getAllRecipes = async (
+  page = 1,
+  limit = 10
+): Promise<(Recipe & { cuisine_name: string })[]> => {
+  const offset = (page - 1) * limit;
   return db.any(
     `SELECT 
         r.id,
@@ -85,7 +87,9 @@ export const getAllRecipes = async (): Promise<
         c.name AS cuisine_name
      FROM recipes r
      JOIN cuisines c ON r.cuisine_id = c.id
-     ORDER BY r.id`
+     ORDER BY r.id
+     LIMIT $1 OFFSET $2`,
+    [limit, offset]
   );
 };
 

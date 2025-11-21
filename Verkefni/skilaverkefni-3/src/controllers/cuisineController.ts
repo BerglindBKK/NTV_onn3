@@ -73,15 +73,6 @@ export const getAllRecipesByCuisineController = async (
       return;
     }
 
-    if (recipes.length === 0) {
-      res.status(404).json({ error: "Recipes not found" });
-      return;
-    }
-
-    // if (!recipes) {
-    //   res.status(404).json({ error: "Cuisine not found" });
-    //   return;
-    // }
     res.status(200).json(recipes);
   } catch (error: any) {
     console.error(error);

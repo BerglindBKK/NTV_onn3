@@ -39,13 +39,18 @@ export const getRecipeByIdController = async (
 
 //vfetches all recipes
 export const getAllRecipesController = async (
-  _req: Request,
+  req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    // fetches all recipes from database - returns an empty array if database is empty
-    const recipes = await getAllRecipes();
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 10;
+
+    // fetches all recipes from database with pagination
+    // returns an empty array if database is empty
+    const recipes = await getAllRecipes(page, limit);
+
     res.status(200).json(recipes);
   } catch (error) {
     console.error(error);

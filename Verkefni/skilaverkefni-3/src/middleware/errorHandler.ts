@@ -13,7 +13,7 @@ export const errorHandler = (
     }));
 
     res.status(400).json({
-      error: "Validation failed",
+      error: "Invalid data type",
       details,
     });
     return;

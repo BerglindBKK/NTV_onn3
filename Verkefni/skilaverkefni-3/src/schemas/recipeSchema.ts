@@ -2,9 +2,9 @@ import { z } from "zod";
 
 export const recipeSchema = z.object({
   title: z
-    .string("Title is required")
-    .min(1, "Title is required")
-    .max(255, "Title too long"),
+    .string("Recipe title is required")
+    .min(1, "Recipe title is required")
+    .max(255, "Recipe title is too long"),
 
   description: z
     .string()
@@ -27,8 +27,10 @@ export const recipeSchema = z.object({
     .optional(),
 
   cuisine_id: z
-    .number("Cusine_id is required")
+    .number("Cusine ID is required")
     .int("Cuisine ID must be an integer"),
 });
+
+export const recipeUpdateSchema = recipeSchema.partial();
 
 export type RecipeInput = z.infer<typeof recipeSchema>;
