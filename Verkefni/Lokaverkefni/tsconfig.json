@@ -43,6 +43,8 @@
     "moduleDetection": "force",
     "skipLibCheck": true,
 
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true
   }
+  
 }

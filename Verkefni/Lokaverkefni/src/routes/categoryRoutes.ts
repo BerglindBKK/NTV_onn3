@@ -1,13 +1,9 @@
 import express from "express";
-import {
-  getAllVenuesController,
-  getVenueByIdController,
-} from "../controllers/venueController";
+import { getAllCategoriesController } from "../controllers/categoryController";
 // import { validate } from "../middleware/validate.js";
 // import { cuisineSchema } from "../schemas/cuisineSchema.js";
 
 const router = express.Router();
 
-router.get("/", getAllVenuesController);
-router.get("/:id", getVenueByIdController);
+router.get("/", getAllCategoriesController);
 export default router;
