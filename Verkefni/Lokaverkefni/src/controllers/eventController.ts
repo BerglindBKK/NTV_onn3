@@ -30,8 +30,8 @@ export const getEventByIdController = async (
       return;
     }
 
-    const events = await getEventById(id);
-    res.status(200).json(events);
+    const event = await getEventById(id);
+    res.status(200).json(event);
   } catch (error) {
     console.error(error);
     next(error);

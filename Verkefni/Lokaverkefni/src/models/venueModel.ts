@@ -14,3 +14,10 @@ export const getAllVenues = async (): Promise<Venue[]> => {
   console.log("Venues fetched from database:", rows);
   return rows;
 };
+
+export const getVenueById = async (id: number): Promise<Venue | null> => {
+  const row = await db.oneOrNone<Venue>("SELECT * FROM venues WHERE id = $1", [
+    id,
+  ]);
+  return row;
+};
