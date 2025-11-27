@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { getAllEvents } from "../models/eventModel";
+import { getAllEvents, getEventById } from "../models/eventModel";
 
 //get all cuisines
 export const getAllEventsController = async (
@@ -10,6 +10,27 @@ export const getAllEventsController = async (
   try {
     //fetches all events from the database
     const events = await getAllEvents();
+    res.status(200).json(events);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+};
+
+export const getEventByIdController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const id = Number(req.params.id);
+    //checks if id is a number
+    if (isNaN(id)) {
+      res.status(400).json({ error: "Invalid event ID" });
+      return;
+    }
+
+    const events = await getEventById(id);
     res.status(200).json(events);
   } catch (error) {
     console.error(error);

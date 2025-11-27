@@ -19,3 +19,10 @@ export const getAllEvents = async (): Promise<Event[]> => {
   console.log("Events fetched from database:", rows);
   return rows;
 };
+
+export const getEventById = async (id: number): Promise<Event | null> => {
+  const row = await db.oneOrNone<Event>("SELECT * FROM events WHERE id=$1", [
+    id,
+  ]);
+  return row;
+};
