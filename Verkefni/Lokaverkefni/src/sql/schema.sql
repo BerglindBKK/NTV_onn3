@@ -36,6 +36,7 @@ CREATE TABLE categories (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+-- tengist við flokka og stað
 CREATE TABLE events (
     id serial PRIMARY KEY,
     title VARCHAR(50) NOT NULL,
@@ -49,6 +50,7 @@ CREATE TABLE events (
     FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE
 );
 
+-- tengist við viðburði
 CREATE TABLE tickets (
     id serial PRIMARY KEY,
     price INT CHECK (
@@ -62,6 +64,7 @@ CREATE TABLE tickets (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+-- tengist við notendur og viðborði
 CREATE TABLE bookings (
     id serial PRIMARY KEY,
     user_id INT NOT NULL,
