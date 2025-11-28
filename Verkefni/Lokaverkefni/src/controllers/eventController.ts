@@ -31,6 +31,10 @@ export const getEventByIdController = async (
     }
 
     const event = await getEventById(id);
+    if (!event) {
+      res.status(404).json({ error: "Event not found" });
+      return;
+    }
     res.status(200).json(event);
   } catch (error) {
     console.error(error);

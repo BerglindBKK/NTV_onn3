@@ -30,6 +30,10 @@ export const getVenueByIdController = async (
       return;
     }
     const venue = await getVenueById(id);
+    if (!venue) {
+      res.status(404).json({ error: "Venue not found" });
+      return;
+    }
     res.status(200).json(venue);
   } catch (error) {
     console.error(error);
