@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { getAllVenues, getVenueById } from "../models/venueModel";
+import { getAllVenues, getVenueById } from "../models/venueModel.js";
 
 //get all venues
 export const getAllVenuesController = async (

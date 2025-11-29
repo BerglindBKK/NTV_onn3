@@ -1,4 +1,4 @@
-import { db } from "../config/db";
+import db from "../config/db.js";
 
 export interface Category {
   id: number;
@@ -15,8 +15,9 @@ export const getAllCategories = async (): Promise<Category[]> => {
 };
 
 export const getCategoryById = async (id: number): Promise<Category | null> => {
-  const row = await db.oneOrNone<Category>("SELECT * FROM events WHERE id=$1", [
-    id,
-  ]);
+  const row = await db.oneOrNone<Category>(
+    "SELECT * FROM categories WHERE id=$1",
+    [id]
+  );
   return row;
 };

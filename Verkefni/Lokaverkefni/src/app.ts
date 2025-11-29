@@ -1,11 +1,13 @@
-import express from "express";
 import dotenv from "dotenv";
+dotenv.config();
+
+import express from "express";
+
 import eventRoutes from "./routes/eventRoutes";
 import venueRoutes from "./routes/venueRoutes";
 import categoryRoutes from "./routes/categoryRoutes";
+import authRoutes from "./routes/authRoutes";
 import { errorHandler } from "./middleware/errorHandler";
-
-dotenv.config();
 
 const app = express();
 app.use(express.json());
@@ -13,8 +15,8 @@ app.use(express.json());
 app.use("/api/events", eventRoutes);
 app.use("/api/venues", venueRoutes);
 app.use("/api/categories", categoryRoutes);
+app.use("/api/auth", authRoutes);
 
-// Error middleware
 app.use(errorHandler);
 
 export default app;

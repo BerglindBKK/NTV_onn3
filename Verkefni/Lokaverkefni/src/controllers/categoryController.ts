@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { getAllCategories, getCategoryById } from "../models/categoryModel";
+import { getAllCategories, getCategoryById } from "../models/categoryModel.js";
 
 //get all categories
 export const getAllCategoriesController = async (

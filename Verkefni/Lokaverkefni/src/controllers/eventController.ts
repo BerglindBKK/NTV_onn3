@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { getAllEvents, getEventById } from "../models/eventModel";
+import { getAllEvents, getEventById } from "../models/eventModel.js";
 
 //get all cuisines
 export const getAllEventsController = async (
