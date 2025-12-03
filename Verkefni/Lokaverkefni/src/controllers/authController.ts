@@ -93,5 +93,5 @@ export const login = async (request: Request, response: Response) => {
   });
 
   //returns the token
-  response.json({ token });
+  response.status(200).json({ token });
 };

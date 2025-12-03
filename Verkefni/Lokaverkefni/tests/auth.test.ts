@@ -11,7 +11,7 @@ describe("Signup", () => {
       email: "test@test.com",
       password: "password123",
     });
-   
+
     expect(res.statusCode).toBe(201);
     expect(res.body.email).toBe("test@test.com");
 
@@ -23,40 +23,78 @@ describe("Signup", () => {
     expect(row.password_hash).not.toBe("password123");
   });
 
-  // //todo
-  // it("should not allow duplicate email", async () => {
-  //   //create two users wit identical emails
-  //   await request(app).post("/api/auth/signup").send({
-  //     name: "Test1",
-  //     email: "test@test.com",
-  //     password: "password1",
-  //   });
+  it("should not allow duplicate email", async () => {
+    //create two users wit identical emails
+    await request(app).post("/api/auth/signup").send({
+      name: "Test1",
+      email: "test@test.com",
+      password: "password1",
+    });
 
-  //   const res = await request(app).post("/api/auth/signup").send({
-  //     name: "Test2",
-  //     email: "test@test.com",
-  //     password: "password2",
-  //   });
+    const res = await request(app).post("/api/auth/signup").send({
+      name: "Test2",
+      email: "test@test.com",
+      password: "password2",
+    });
 
-  //   expect(res.status).toBe(400);
-  //   expect(res.body.error).toBeDefined();
-  // });
+    expect(res.status).toBe(400);
+    expect(res.body.error).toBeDefined();
+  });
 
-  // //todo
-  // it("should fail when missing fields", async () => {
-  //   //create two users wit identical emails
-  //   const res = await request(app).post("/api/auth/signup").send({
-  //     email: "test@test.com",
-  //   });
-  //   expect(res.status).toBe(400);
-  // });
+  it("should fail when missing email", async () => {
+    const res = await request(app).post("/api/auth/signup").send({
+      email: "test@test.com",
+    });
+    expect(res.status).toBe(400);
+  });
+
+  it("should fail when missing password", async () => {
+    const res = await request(app).post("/api/auth/signup").send({
+      password: "password2",
+    });
+    expect(res.statusCode).toBe(400);
+  });
 });
 
-// describe("Login", () => {
-//   //todo
-//   it("should login user and return JWT", async () => {});
-//   //todo
-//   it("should fail with wrong password", async () => {});
-//   //todo
-//   it("should fail for non-existing user", async () => {});
-// });
+describe("Login", () => {
+  it("login user and return JWT", async () => {
+    // await request(app).post("/api/auth/signup").send({
+    //   name: "Test1",
+    //   email: "test@test.com",
+    //   password: "password11",
+    // });
+
+    const res = await request(app).post("/api/auth/login").send({
+      email: "test@test.com",
+      password: "password123",
+    });
+    // const allUsers = await db.any("SELECT * FROM users");
+    // console.log("Users in DB:", allUsers);
+    expect(res.status).toBe(200);
+    expect(res.body.token).toBeDefined();
+  });
+
+  it("should fail with wrong password", async () => {
+    // await request(app).post("/api/auth/signup").send({
+    //   name: "Test1",
+    //   email: "test@test.com",
+    //   password: "password1",
+    // });
+
+    const res = await request(app).post("/api/auth/login").send({
+      email: "test@test.com",
+      password: "password2",
+    });
+
+    expect(res.statusCode).toBe(401);
+  });
+  //   //todo
+  it("should fail for non-existing user", async () => {
+    const res = await request(app).post("/api/auth/login").send({
+      email: "test_ekkitil@test.com",
+      password: "password2",
+    });
+
+    expect(res.statusCode).toBe(401);
+  });
+});
