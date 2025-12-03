@@ -1,4 +1,8 @@
 import { defineConfig } from "vitest/config";
+import dotenv from "dotenv";
+
+// Force Vitest to load .env.test
+dotenv.config({ path: ".env.test" });
 
 export default defineConfig({
   test: {

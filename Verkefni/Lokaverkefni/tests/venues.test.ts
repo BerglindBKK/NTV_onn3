@@ -21,8 +21,8 @@ describe("GET /venues", () => {
 
 describe("GET /venues/:id", () => {
   it("returns proper HTTP responses for valid and invalid IDs", async () => {
-    //given that id = 3 exists <- kannski ekki harðkóða? bæta seinne
-    const res = await request(app).get("/api/venues/3");
+    //given that id = 1 exists <- kannski ekki harðkóða? bæta seinne
+    const res = await request(app).get("/api/venues/1");
     expect(res.statusCode).toBe(200);
     //should not crash
     expect(res.statusCode).not.toBe(500);

@@ -1,7 +1,14 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-import pgPromise from "pg-promise"; // ESM-safe default import
+// use the test database when testing
+if (process.env.VITEST) {
+  dotenv.config({ path: ".env.test" });
+} else {
+  dotenv.config();
+}
+
+import pgPromise from "pg-promise";
 
 const pgp = pgPromise();
 
