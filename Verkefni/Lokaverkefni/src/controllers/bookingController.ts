@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { getBookingsByUser } from "../models/bookingModel.js";
+import { getBookingsByUser, createBooking } from "../models/bookingModel.js";
 
 //get bookings for a specific user
 export const getBookingsByUserController = async (
@@ -10,7 +10,7 @@ export const getBookingsByUserController = async (
   try {
     const userId = req.user?.id;
 
-    //middleware checks user's authorarization,
+    // middleware checks user's authorarization,
     // verifies JWT signatures and
     // extracts id from token and attaches userId to req.user
     // If user.id.id is missing, the user is not authenticated
@@ -23,6 +23,51 @@ export const getBookingsByUserController = async (
     const bookings = await getBookingsByUser(userId);
 
     res.status(200).json(bookings);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+};
+
+//create a booking
+export const createBookingController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    console.log("BODY:", req.body);
+    const { event_id, ticket_id, quantity } = req.body;
+    const userId = req.user?.id;
+    if (!userId) {
+      res.status(401).json({ error: "User not authenticated" });
+      return;
+    }
+
+    //checks if all the inputs from user are integers
+    //if not return error 400
+    if (
+      !Number.isInteger(event_id) ||
+      !Number.isInteger(ticket_id) ||
+      !Number.isInteger(quantity)
+    ) {
+      res.status(400).json({ error: "Invalid input" });
+      return;
+    }
+
+    //checks if quantity is a positive integer
+    if (quantity < 1) {
+      res.status(400).json({ error: "Quantity must be at least 1" });
+      return;
+    }
+    // create booking
+    const created = await createBooking({
+      user_id: userId,
+      event_id,
+      ticket_id,
+      quantity,
+    });
+    res.status(201).json(created);
   } catch (error) {
     console.error(error);
     next(error);
