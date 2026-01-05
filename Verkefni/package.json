@@ -8,5 +8,7 @@
     "@types/supertest": "6.0.3",
     "dotenv": "17.2.3",
     "supertest": "7.1.4"
-  }
+  },
+  "test": "vitest",
+  "test:watch": "vitest --watch"
 }

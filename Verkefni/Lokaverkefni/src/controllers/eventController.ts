@@ -1,15 +1,25 @@
 import { Request, Response, NextFunction } from "express";
-import { getAllEvents, getEventById } from "../models/eventModel.js";
+import { getEventById, getFilteredEvents } from "../models/eventModel.js";
 
-//get all cuisines
-export const getAllEventsController = async (
-  _req: Request,
+//get all events, filters optional
+export const getFilteredEventsController = async (
+  req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    //fetches all events from the database
-    const events = await getAllEvents();
+    const filters = {
+      title: req.query.title as string | undefined,
+      category_id: req.query.category_id
+        ? Number(req.query.category_id)
+        : undefined,
+      venue_id: req.query.venue_id ? Number(req.query.venue_id) : undefined,
+      date_from: req.query.date_from as string | undefined,
+      date_to: req.query.date_to as string | undefined,
+      sort: req.query.sort as string | undefined,
+    };
+
+    const events = await getFilteredEvents(filters);
     res.status(200).json(events);
   } catch (error) {
     console.error(error);
@@ -17,6 +27,7 @@ export const getAllEventsController = async (
   }
 };
 
+//get specific events
 export const getEventByIdController = async (
   req: Request,
   res: Response,

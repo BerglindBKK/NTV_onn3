@@ -8,7 +8,8 @@ export interface Booking {
   updated_at: string;
 }
 
-// gets Bookings for the requested user. Returns empty array i f no bookings
+// gets Bookings for the requested user. 
+// Returns empty array i f no bookings
 export const getBookingsByUser = async (userId: number): Promise<Booking[]> => {
   const rows = await db.any<Booking>(
     "SELECT * from bookings WHERE user_id=$1",

@@ -1,12 +1,12 @@
 import express from "express";
 import {
-  getAllEventsController,
+  getFilteredEventsController,
   getEventByIdController,
 } from "../controllers/eventController.js";
 
 const router = express.Router();
 
-router.get("/", getAllEventsController);
+router.get("/", getFilteredEventsController);
 router.get("/:id", getEventByIdController);
 
 export default router;
