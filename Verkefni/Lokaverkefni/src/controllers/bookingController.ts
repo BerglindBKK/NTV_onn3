@@ -22,7 +22,7 @@ export const getBookingsByUserController = async (
     // fetches ookings for user returns [] if no bookings
     const bookings = await getBookingsByUser(userId);
 
-    res.status(200).json(bookings);
+    res.status(201).json(bookings);
   } catch (error) {
     console.error(error);
     next(error);
@@ -67,7 +67,7 @@ export const createBookingController = async (
       ticket_id,
       quantity,
     });
-    res.status(201).json(created);
+    res.status(200).json(created);
   } catch (error) {
     console.error(error);
     next(error);

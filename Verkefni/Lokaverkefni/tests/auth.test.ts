@@ -48,6 +48,22 @@ describe("Signup", () => {
     expect(res.status).toBe(400);
   });
 
+  it("should not store password in text form", async () => {
+    const res = await request(app).post("/api/auth/signup").send({
+      name: "pwnotintextform",
+      email: "pwnotintextform@test.com",
+      password: "pwnotintextform",
+    });
+    expect(res.status).toBe(201);
+
+    const row = await db.one("SELECT * FROM users WHERE email=$1", [
+      "pwnotintextform@test.com",
+    ]);
+
+    expect(row.password_hash).not.toBe("pwnotintextform");
+    expect(row.password_hash).toMatch(/^\$2[aby]\$/);
+  });
+
   it("should fail when missing email", async () => {
     const res = await request(app).post("/api/auth/signup").send({
       password: "missingemail@test.com",
