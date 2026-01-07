@@ -1,12 +1,12 @@
 import db from "../config/db.js";
 
-export interface Booking {
-  id: number;
-  user_id: number;
-  event_id: number;
-  created_at: string;
-  updated_at: string;
-}
+// export interface Booking {
+//   id: number;
+//   user_id: number;
+//   event_id: number;
+//   created_at: string;
+//   updated_at: string;
+// }
 
 export interface BookingInput {
   user_id: number;
@@ -15,11 +15,31 @@ export interface BookingInput {
   quantity: number;
 }
 
+export interface BookingHistoryRow {
+  id: number;
+  created_at: string;
+  title: string;
+  event_date: string;
+  ticket_id: number;
+  quantity: number;
+  price: number;
+  total_price: number;
+}
+
 // Gets Bookings for the requested user.
 // Returns empty array if there are no bookings
-export const getBookingsByUser = async (userId: number): Promise<Booking[]> => {
-  const rows = await db.any<Booking>(
-    "SELECT * from bookings WHERE user_id=$1",
+export const getBookingsByUser = async (
+  userId: number
+): Promise<BookingHistoryRow[]> => {
+  const rows = await db.any<BookingHistoryRow>(
+    `SELECT b.id, b.created_at, e.title, e.event_date, bi.ticket_id, bi.quantity, t.price, (bi.quantity * t.price) AS total_price
+     FROM bookings b
+     JOIN events e ON e.id = b.event_id
+     JOIN booking_items bi ON bi.booking_id = b.id
+     JOIN tickets t ON t.id = bi.ticket_id
+     WHERE b.user_id = $1
+     ORDER BY b.created_at DESC, b.id DESC
+    `,
     [userId]
   );
   console.log("Bookings fetched from database:", rows);
@@ -52,8 +72,8 @@ export const createBooking = async (data: BookingInput) => {
     //updates ticket and checks if there are tickets available
     const updated = await t.result(
       `UPDATE tickets
-   SET stock = stock - $1
-WHERE id = $2 AND stock >= $1`,
+      SET stock = stock - $1
+      WHERE id = $2 AND stock >= $1`,
       [quantity, ticket_id]
     );
 

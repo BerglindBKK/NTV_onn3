@@ -46,8 +46,9 @@ describe("GET /bookings", () => {
     if (res.body.length > 0) {
       const booking = res.body[0];
       expect(booking).toHaveProperty("id");
-      expect(booking).toHaveProperty("user_id");
-      expect(booking).toHaveProperty("event_id");
+      expect(booking).toHaveProperty("title");
+      expect(booking).toHaveProperty("quantity");
+      expect(booking).toHaveProperty("price");
     }
   });
 
