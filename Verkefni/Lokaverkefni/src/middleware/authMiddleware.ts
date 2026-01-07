@@ -21,9 +21,7 @@ export const authMiddleware = async (
     // Extract the token after "Bearer ". If no header or incorrect, token will be undefined
     const token = authHeader && authHeader.split("Bearer ")[1];
     if (!token) {
-      response
-        .status(400)
-        .json({ error: "Aðgangur óheimill. Ekkert token fannst." });
+      response.status(401).json({ error: "Missing token." });
       return;
     }
 
