@@ -68,8 +68,24 @@ export const createBookingController = async (
       quantity,
     });
     res.status(201).json(created);
-  } catch (error) {
-    console.error(error);
+  } catch (error: any) {
+    const msg = error?.message;
+
+    if (msg === "Event not found" || msg === "Ticket not found") {
+      res.status(404).json({ error: msg });
+      return;
+    }
+
+    if (
+      msg === "Event is in the past" ||
+      msg === "Not enough tickets available" ||
+      msg === "Ticket does not belong to event"
+    ) {
+      res.status(409).json({ error: msg });
+
+      return;
+    }
+
     next(error);
   }
 };

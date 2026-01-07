@@ -119,13 +119,10 @@ describe("POST /bookings", () => {
       .send({ event_id: 1, ticket_id: 1, quantity: 2 });
 
     //check if response matches expectations
-    if (res.body.length > 0) {
-      const booking = res.body[0];
-      expect(booking).toHaveProperty("booking_id");
-      expect(booking).toHaveProperty("event_id");
-      expect(booking).toHaveProperty("ticket_id");
-      expect(booking).toHaveProperty("quantity");
-    }
+    expect(res.body).toHaveProperty("booking_id");
+    expect(res.body).toHaveProperty("event_id");
+    expect(res.body).toHaveProperty("ticket_id");
+    expect(res.body).toHaveProperty("quantity");
   });
 
   it("should link the booking to logged-in user", async () => {
@@ -141,21 +138,114 @@ describe("POST /bookings", () => {
       .set("Authorization", `Bearer ${token}`);
 
     expect(res.body.length).toBeGreaterThan(0);
+    //get user_id from token user and check if same user for the last booking
     const userId = res.body[0].user_id;
     res.body.forEach((b: any) => expect(b.user_id).toBe(userId));
   });
 
-  it("should exist in booking_items", async () => {});
+  // tokens errors
+  it("should fail without token", async () => {
+    const res = await request(app)
+      .post("/api/bookings")
+      .send({ event_id: 1, ticket_id: 1, quantity: 2 });
 
-  // errors:
-  // test: no token - invalid token
-  // test: no event
-  // test: event in the past
-  // test: ticket not found
-  // test: ticket does not belong to event
-  // test: not enough tickets
-  // test: on faliure, ton't reduce ticketS!
-  // test: expects not to be 500
-  // test: no integer values
-  // test: missing inputs
+    expect(res.status).toBe(401);
+  });
+
+  it("should fail with invalid token", async () => {
+    const res = await request(app)
+      .post("/api/bookings")
+      .set("Authorization", `Bearer invalid.token`)
+      .send({ event_id: 1, ticket_id: 1, quantity: 2 });
+
+    expect(res.status).toBe(403);
+  });
+
+  //event errors
+  it("should fail if event is not found", async () => {
+    const res = await request(app)
+      .post("/api/bookings")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ event_id: 999, ticket_id: 1, quantity: 2 });
+
+    expect(res.status).toBe(404);
+  });
+
+  it("should fail if event is in the past", async () => {
+    const res = await request(app)
+      .post("/api/bookings")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ event_id: 2, ticket_id: 2, quantity: 2 });
+
+    expect(res.status).toBe(409);
+  });
+
+  //ticket errors
+  it("should fail if ticket is not found", async () => {
+    const res = await request(app)
+      .post("/api/bookings")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ event_id: 1, ticket_id: 999, quantity: 2 });
+
+    expect(res.status).toBe(404);
+  });
+
+  it("should fail if ticket does not belong to event", async () => {
+    const res = await request(app)
+      .post("/api/bookings")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ event_id: 1, ticket_id: 2, quantity: 2 });
+
+    expect(res.status).toBe(409);
+  });
+
+  it("should fail if not enough tickets in stock", async () => {
+    const res = await request(app)
+      .post("/api/bookings")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ event_id: 4, ticket_id: 4, quantity: 2 });
+
+    expect(res.status).toBe(409);
+  });
+
+  it("should not reduce tickets if booking fails", async () => {
+    // check original stock
+    const before = await db.one("SELECT stock FROM tickets WHERE id=$1", [1]);
+    // create the failing booking
+    const res = await request(app)
+      .post("/api/bookings")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ event_id: 2, ticket_id: 1, quantity: 2 });
+
+    //check stock after booking
+    const after = await db.one("SELECT stock FROM tickets WHERE id=$1", [1]);
+    //expecting the stock NOT to be reduced by the number of quantity
+    expect(after.stock).toBe(before.stock);
+  });
+
+  it("should fail with invalid input", async () => {
+    const res = await request(app)
+      .post("/api/bookings")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ event_id: "b", ticket_id: 1, quantity: 1 });
+
+    expect(res.status).toBe(400);
+  });
+
+  it("should fail with missing input", async () => {
+    const res = await request(app)
+      .post("/api/bookings")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ ticket_id: 1, quantity: 1 });
+
+    expect(res.status).toBe(400);
+  });
+
+  it("should not crash", async () => {
+    const res = await request(app)
+      .post("/api/bookings")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ event_id: 1, ticket_id: 1, quantity: 1 });
+    expect(res.statusCode).not.toBe(500);
+  });
 });
