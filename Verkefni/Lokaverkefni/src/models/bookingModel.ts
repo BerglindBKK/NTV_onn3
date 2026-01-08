@@ -1,13 +1,5 @@
 import db from "../config/db.js";
 
-// export interface Booking {
-//   id: number;
-//   user_id: number;
-//   event_id: number;
-//   created_at: string;
-//   updated_at: string;
-// }
-
 export interface BookingInput {
   user_id: number;
   event_id: number;
@@ -104,5 +96,87 @@ export const createBooking = async (data: BookingInput) => {
       quantity,
       created_at: booking.created_at,
     };
+  });
+};
+
+export const cancelBooking = async (bookingId: number, userId: number) => {
+  return db.tx(async (t) => {
+    //checks if booking exists. and gets corresponding user and event
+    const booking = await t.oneOrNone<{
+      user_id: number;
+      event_id: number;
+      event_date: string;
+    }>(
+      `SELECT b.user_id, e.event_id, e.event_date
+      FROM bookings b
+      JOIN events e ON b.event_id = e.id
+      WHERE b.id = $1`,
+      [bookingId]
+    );
+    if (!booking) {
+      throw new Error("Booking not found");
+    }
+    if (booking.user_id !== userId) {
+      throw new Error("Forbidden");
+    }
+
+    //check if event date is less thatn 24 hours away
+    const eventDate = new Date(booking.event_date).getTime();
+    const now = Date.now();
+    const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
+    console.log("event date: ", eventDate);
+    console.log("now: ", now);
+
+    if (eventDate - now < TWENTY_FOUR_HOURS) {
+      throw new Error(
+        "Cancellation not allowed: event less than 24 hours away"
+      );
+    }
+
+    // get booking items
+    const bookingItem = await t.one<{
+      ticket_id: number;
+      quantity: number;
+      booking_items_id: number;
+    }>(
+      `SELECT ticket_id, quantity, id AS booking_items_id
+      FROM booking_items 
+      WHERE booking_id = $1`,
+      [bookingId]
+    );
+    const bookingItemsId = bookingItem.booking_items_id;
+
+    console.log("booking_items id: ", bookingItemsId);
+
+    //restore ticket stock
+    await t.none(
+      `UPDATE tickets
+      SET stock = stock + $1
+      WHERE id = $2`,
+      [bookingItem.quantity, bookingItem.ticket_id]
+    );
+
+    //delete booking item
+    const bookingItemsDeleted = await t.result(
+      `DELETE FROM booking_items
+      WHERE id = $1`,
+      [bookingItemsId]
+    );
+    //check if booking items is deleted
+    if (bookingItemsDeleted.rowCount === 0) {
+      throw new Error("Booking item not found");
+    }
+
+    //delete booking
+    const bookingDeleted = await t.result(
+      `DELETE FROM bookings
+      WHERE id = $1`,
+      [bookingId]
+    );
+    //check if booking is deleted
+    if (bookingDeleted.rowCount === 0) {
+      throw new Error("Booking not found");
+    }
+    return { ok: true };
   });
 };

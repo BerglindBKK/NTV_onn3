@@ -1,5 +1,9 @@
 import { Request, Response, NextFunction } from "express";
-import { getBookingsByUser, createBooking } from "../models/bookingModel.js";
+import {
+  getBookingsByUser,
+  createBooking,
+  cancelBooking,
+} from "../models/bookingModel.js";
 
 //get bookings for a specific user
 export const getBookingsByUserController = async (
@@ -81,6 +85,53 @@ export const createBookingController = async (
       msg === "Not enough tickets available" ||
       msg === "Ticket does not belong to event"
     ) {
+      res.status(409).json({ error: msg });
+
+      return;
+    }
+
+    next(error);
+  }
+};
+
+export const cancelBookingController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const id = Number(req.params.id);
+    const userId = req.user?.id;
+
+    // middleware checks user's authorarization,
+    // verifies JWT signatures and
+    // extracts id from token and attaches userId to req.user
+    // If user.id.id is missing, the user is not authenticated
+    if (!userId) {
+      res.status(401).json({ error: "User not authenticated" });
+      return;
+    }
+    // fetches ookings for user returns [] if no bookings
+    await cancelBooking(id, userId);
+
+    res.status(200).json({
+      message: "Booking cancelled successfully",
+    });
+  } catch (error: any) {
+    const msg = error?.message;
+
+    if (msg === "Booking not found" || msg === "Booking item not found") {
+      res.status(404).json({ error: msg });
+      return;
+    }
+
+    if (msg == "Forbidden") {
+      res.status(403).json({ error: msg });
+
+      return;
+    }
+
+    if (msg === "Cancellation not allowed: event less than 24 hours away") {
       res.status(409).json({ error: msg });
 
       return;
