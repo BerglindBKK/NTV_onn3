@@ -40,7 +40,6 @@ export const createBookingController = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    console.log("BODY:", req.body);
     const { event_id, ticket_id, quantity } = req.body;
     const userId = req.user?.id;
     if (!userId) {

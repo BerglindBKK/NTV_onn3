@@ -34,7 +34,6 @@ export const getBookingsByUser = async (
     `,
     [userId]
   );
-  console.log("Bookings fetched from database:", rows);
   return rows;
 };
 
@@ -107,7 +106,7 @@ export const cancelBooking = async (bookingId: number, userId: number) => {
       event_id: number;
       event_date: string;
     }>(
-      `SELECT b.user_id, e.event_id, e.event_date
+      `SELECT b.user_id, b.event_id, e.event_date
       FROM bookings b
       JOIN events e ON b.event_id = e.id
       WHERE b.id = $1`,
@@ -124,8 +123,6 @@ export const cancelBooking = async (bookingId: number, userId: number) => {
     const eventDate = new Date(booking.event_date).getTime();
     const now = Date.now();
     const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
-    console.log("event date: ", eventDate);
-    console.log("now: ", now);
 
     if (eventDate - now < TWENTY_FOUR_HOURS) {
       throw new Error(
@@ -145,8 +142,6 @@ export const cancelBooking = async (bookingId: number, userId: number) => {
       [bookingId]
     );
     const bookingItemsId = bookingItem.booking_items_id;
-
-    console.log("booking_items id: ", bookingItemsId);
 
     //restore ticket stock
     await t.none(
