@@ -17,6 +17,32 @@ describe("GET /events", () => {
       expect(event).toHaveProperty("event_date");
     }
   });
+
+  it("returns a filtered list of events", async () => {
+    const res = await request(app).get("/api/events?venue_id=1");
+
+    expect(res.statusCode).toBe(200);
+    expect(Array.isArray(res.body)).toBe(true);
+
+    res.body.forEach((event: any) => {
+      expect(event.venue_id).toBe(1);
+    });
+  });
+
+  it("returns sorted events ascending", async () => {
+    const res = await request(app).get("/api/events?sort=price");
+
+    expect(res.statusCode).toBe(200);
+    expect(Array.isArray(res.body)).toBe(true);
+
+    for (let i = 1; i < res.body.length; i++) {
+      expect(Number(res.body[i].min_price)).toBeGreaterThanOrEqual(
+        Number(res.body[i - 1].min_price)
+      );
+    }
+  });
+
+  it.todo("sorts by popularity");
 });
 
 describe("GET /events/:id", () => {

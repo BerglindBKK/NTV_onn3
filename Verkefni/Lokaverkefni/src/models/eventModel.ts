@@ -15,8 +15,10 @@ export interface Filters {
   title?: string;
   category_id?: number;
   venue_id?: number;
+  city?: string;
   date_from?: string;
   date_to?: string;
+  sort?: "date" | "price" | "popularity";
 }
 
 export const getAllEvents = async (): Promise<Event[]> => {
@@ -24,7 +26,6 @@ export const getAllEvents = async (): Promise<Event[]> => {
   const rows = await db.any<Event>(
     "SELECT id, title, description, event_date, category_id,venue_id, created_at, updated_at FROM events ORDER BY title"
   );
-  console.log("Events fetched from database:", rows);
   return rows;
 };
 
@@ -44,45 +45,73 @@ export const getFilteredEvents = async (filters: Filters) => {
   let index = 1;
 
   if (filters.title) {
-    conditions.push(`title ILIKE $${index++}`);
+    conditions.push(`e.title ILIKE $${index++}`);
     values.push(`%${filters.title}%`);
   }
 
   // filters for category
   if (filters.category_id) {
-    conditions.push(`category_id = $${index++}`);
+    conditions.push(`e.category_id = $${index++}`);
     values.push(filters.category_id);
   }
 
   // filters for venue
   if (filters.venue_id) {
-    conditions.push(`venue_id = $${index++}`);
+    conditions.push(`e.venue_id = $${index++}`);
     values.push(filters.venue_id);
   }
 
+  //filters for city
+  if (filters.city) {
+    conditions.push(`v.city ILIKE $${index++}`);
+    values.push(filters.city);
+  }
   // filters for events starting on (inclusive) this date
   if (filters.date_from) {
-    conditions.push(`event_date >= $${index++}`);
+    conditions.push(`e.event_date >= $${index++}`);
     values.push(filters.date_from);
   }
 
   // filters for events ending on (inclusive) this date
   if (filters.date_to) {
-    conditions.push(`event_date <= $${index++}`);
+    conditions.push(`e.event_date <= $${index++}`);
     values.push(filters.date_to);
   }
+  //upcoming events only
+  conditions.push(`e.event_date > NOW()`);
+
+  const whereLogic = conditions.length
+    ? `WHERE ${conditions.join(" AND ")}`
+    : "";
 
   // Sorting
+  let orderBy = "e.event_date ASC"; // default
 
-  // if the filter exists - builds where clause
-  const whereLogic =
-    conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
+  if (filters.sort === "date") {
+    orderBy = "e.event_date ASC";
+  }
+
+  if (filters.sort === "price") {
+    orderBy = "MIN(t.price) ASC";
+  }
+
+  if (filters.sort === "popularity") {
+    orderBy = "COUNT(bi.id) DESC";
+  }
+
   // final query
   const query = `
-    SELECT *
-    FROM events
+    SELECT e.*,
+    MIN(t.price) AS min_price,
+    COUNT(bi.id) AS popularity
+    FROM events e
+    JOIN venues v ON v.id = e.venue_id
+    LEFT JOIN tickets t ON t.event_id = e.id
+    LEFT JOIN bookings b ON b.event_id = e.id
+    LEFT JOIN booking_items bi ON bi.booking_id = b.id
     ${whereLogic}
-    ORDER BY event_date ASC
+    GROUP BY e.id
+    ORDER BY ${orderBy}
   `;
 
   return db.any(query, values);

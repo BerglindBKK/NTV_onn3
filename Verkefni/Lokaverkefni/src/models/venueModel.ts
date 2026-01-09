@@ -4,6 +4,7 @@ export interface Venue {
   id: number;
   name: string;
   address: string;
+  city: string;
   created_at: string;
   updated_at: string;
 }

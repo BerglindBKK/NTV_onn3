@@ -14,9 +14,10 @@ export const getFilteredEventsController = async (
         ? Number(req.query.category_id)
         : undefined,
       venue_id: req.query.venue_id ? Number(req.query.venue_id) : undefined,
+      city: req.query.city as string | undefined,
       date_from: req.query.date_from as string | undefined,
       date_to: req.query.date_to as string | undefined,
-      sort: req.query.sort as string | undefined,
+      sort: req.query.sort as "date" | "price" | "popularity" | undefined,
     };
 
     const events = await getFilteredEvents(filters);

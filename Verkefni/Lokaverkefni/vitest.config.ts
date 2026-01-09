@@ -13,5 +13,13 @@ export default defineConfig({
     environmentOptions: {
       tsconfigFile: "tsconfig.test.json",
     },
+
+    pool: "forks",
+    poolOptions: {
+      forks: {
+        singleFork: true,
+      },
+    },
+    fileParallelism: false,
   },
 });
