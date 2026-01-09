@@ -29,11 +29,22 @@ export const getAllEvents = async (): Promise<Event[]> => {
   return rows;
 };
 
-export const getEventById = async (id: number): Promise<Event | null> => {
-  const row = await db.oneOrNone<Event>("SELECT * FROM events WHERE id=$1", [
-    id,
-  ]);
-  return row;
+export const getEventById = async (event_id: number) => {
+  const event = await db.oneOrNone<Event>(
+    `SELECT * FROM events WHERE id = $1`,
+    [event_id]
+  );
+  if (!event) return null;
+
+  const tickets = await db.any(
+    `SELECT id, price, stock
+    FROM tickets
+    WHERE event_id = $1
+    ORDER BY price ASC
+    `,
+    [event_id]
+  );
+  return { ...event, tickets };
 };
 
 export const getFilteredEvents = async (filters: Filters) => {

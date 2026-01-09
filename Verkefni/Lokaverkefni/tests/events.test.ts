@@ -59,4 +59,19 @@ describe("GET /events/:id", () => {
     const invalid = await request(app).get("/api/events/g");
     expect(invalid.statusCode).toBe(400);
   });
+
+  it("shows tickets with price and stock", async () => {
+    const res = await request(app).get("/api/events/1");
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toHaveProperty("id");
+    expect(res.body).toHaveProperty("tickets");
+    expect(Array.isArray(res.body.tickets)).toBe(true);
+
+    if (res.body.tickets.length > 0) {
+      const t = res.body.tickets[0];
+      expect(t).toHaveProperty("id");
+      expect(t).toHaveProperty("price");
+      expect(t).toHaveProperty("stock");
+    }
+  });
 });
