@@ -43,6 +43,5 @@ export const getUpcomingEventsByVenueId = async (
     WHERE e.event_date > NOW() AND e.venue_id = $1`,
     [venueId]
   );
-
   return row;
 };
