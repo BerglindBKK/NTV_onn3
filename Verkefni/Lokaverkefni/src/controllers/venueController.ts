@@ -1,5 +1,9 @@
 import { Request, Response, NextFunction } from "express";
-import { getAllVenues, getVenueById } from "../models/venueModel.js";
+import {
+  getAllVenues,
+  getVenueById,
+  getUpcomingEventsByVenueId,
+} from "../models/venueModel.js";
 
 //get all venues
 export const getAllVenuesController = async (
@@ -34,7 +38,8 @@ export const getVenueByIdController = async (
       res.status(404).json({ error: "Venue not found" });
       return;
     }
-    res.status(200).json(venue);
+    const UpcomingEvents = await getUpcomingEventsByVenueId(id);
+    res.status(200).json({ venue, UpcomingEvents });
   } catch (error) {
     console.error(error);
     next(error);

@@ -33,4 +33,29 @@ describe("GET /venues/:id", () => {
     const invalid = await request(app).get("/api/venues/g");
     expect(invalid.statusCode).toBe(400);
   });
+
+  it("shows upcoming events at the venue", async () => {
+    const res = await request(app).get("/api/venues/1");
+    expect(res.body.venue).toHaveProperty("id");
+    expect(res.body.venue).toHaveProperty("name");
+    expect(res.body.venue).toHaveProperty("address");
+    expect(res.body.venue).toHaveProperty("city");
+    expect(Array.isArray(res.body.UpcomingEvents)).toBe(true);
+
+    if (res.body.UpcomingEvents.length > 0) {
+      const t = res.body.UpcomingEvents[0];
+      expect(t).toHaveProperty("id");
+      expect(t).toHaveProperty("title");
+      expect(t).toHaveProperty("event_date");
+    }
+  });
+
+  it("only shows upcoming events in UpcomingEvents", async () => {
+    const res = await request(app).get("/api/venues/1");
+    expect(res.statusCode).toBe(200);
+
+    res.body.UpcomingEvents.forEach((e: any) => {
+      expect(new Date(e.event_date).getTime()).toBeGreaterThan(Date.now());
+    });
+  });
 });
