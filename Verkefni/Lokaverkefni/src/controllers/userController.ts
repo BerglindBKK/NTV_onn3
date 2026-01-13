@@ -1,6 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 import bcrypt from "bcrypt";
-import { updateUser, findUserByEmail } from "../models/userModel.js";
+import {
+  updateUser,
+  findUserByEmail,
+  cancelAllBookingsAndDeleteUser,
+} from "../models/userModel.js";
 
 //rounds of hashing
 const SALT_ROUNDS = 12;
@@ -77,6 +81,33 @@ export const updateUserProfileController = async (
     res.status(200).json(updatedUser);
   } catch (error: any) {
     console.error(error);
+    next(error);
+  }
+};
+
+export const cancelAllBookingsAndDeleteUserController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    //user must be authenticated, fetches user id
+    const userId = req.user?.id;
+    if (!userId) {
+      res.status(401).json({ error: "User not authenticated" });
+      return;
+    }
+
+    //cancel all bookings for user and delete profile
+    await cancelAllBookingsAndDeleteUser(userId);
+    res.status(200).json({ message: "Userprofile deleted successfully" });
+  } catch (error: any) {
+    const msg = error?.message;
+
+    if (msg === "User not found") {
+      res.status(404).json({ error: msg });
+      return;
+    }
     next(error);
   }
 };

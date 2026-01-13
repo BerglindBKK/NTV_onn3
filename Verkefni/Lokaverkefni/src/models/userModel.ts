@@ -37,6 +37,7 @@ export const createUser = async (user: CreateUser): Promise<User> => {
   );
 };
 
+//updates user information in database
 export const updateUser = async (data: UpdateUserInput) => {
   const { id, name, email, password_hash } = data;
   return await db.one(
@@ -51,4 +52,45 @@ export const updateUser = async (data: UpdateUserInput) => {
 `,
     [name, email, password_hash, id]
   );
+};
+
+export const cancelAllBookingsAndDeleteUser = async (userId: number) => {
+  return db.tx(async (t) => {
+    //checks if booking exists. and gets corresponding user and event
+    const bookingIds = await t.any<{
+      id: number;
+    }>(
+      `SELECT b.id
+      FROM bookings b
+      JOIN events e ON b.event_id = e.id
+      WHERE b.user_id = $1
+      AND e.event_date > NOW()`,
+      [userId]
+    );
+
+    //loop through the bookings
+    for (const b of bookingIds) {
+      //finding ticket_id and quantity fir each booking
+      const items = await t.any<{ ticket_id: number; quantity: number }>(
+        `SELECT ticket_id, quantity FROM booking_items WHERE booking_id = $1`,
+        [b.id]
+      );
+
+      //return tickets to stock
+      for (const item of items) {
+        await t.none(`UPDATE tickets SET stock = stock + $1 WHERE id = $2`, [
+          item.quantity,
+          item.ticket_id,
+        ]);
+      }
+
+      // delete booking items and booking. Cascade will delete remaining bookings and booking items
+      await t.none(`DELETE FROM booking_items WHERE booking_id = $1`, [b.id]);
+      await t.none(`DELETE FROM bookings WHERE id = $1`, [b.id]);
+    }
+    const result = await t.result(`DELETE FROM users WHERE id = $1`, [userId]);
+    if (result.rowCount === 0) throw new Error("User not found");
+
+    return { ok: true };
+  });
 };
