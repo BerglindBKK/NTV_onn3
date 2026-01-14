@@ -42,7 +42,18 @@ describe("GET /events", () => {
     }
   });
 
-  it.todo("sorts by popularity");
+  it("sorts by popularity", async () => {
+    const res = await request(app).get("/api/events?sort=popularity");
+
+    expect(res.statusCode).toBe(200);
+    expect(Array.isArray(res.body)).toBe(true);
+
+    for (let i = 1; i < res.body.length; i++) {
+      expect(Number(res.body[i - 1].popularity)).toBeGreaterThanOrEqual(
+        Number(res.body[i].popularity)
+      );
+    }
+  });
 });
 
 describe("GET /events/:id", () => {

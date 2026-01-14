@@ -38,8 +38,8 @@ export const getVenueByIdController = async (
       res.status(404).json({ error: "Venue not found" });
       return;
     }
-    const UpcomingEvents = await getUpcomingEventsByVenueId(id);
-    res.status(200).json({ venue, UpcomingEvents });
+    const upcomingEvents = await getUpcomingEventsByVenueId(id);
+    res.status(200).json({ venue, upcomingEvents });
   } catch (error) {
     console.error(error);
     next(error);
