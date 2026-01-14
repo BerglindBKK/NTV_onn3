@@ -2,23 +2,27 @@
 
 import request from "supertest";
 import app from "../src/app";
+import db from "../src/config/db.js";
+import crypto from "crypto";
 
 describe("PATCH /users/me", () => {
   //uses same signup, login and token for all  PATCH tests
   let token: string;
   beforeAll(async () => {
     //sign up for all PATCH
-    await request(app).post("/api/auth/signup").send({
+    const signupRes = await request(app).post("/api/auth/signup").send({
       name: "patchbookingstester",
       email: "patchbookingstester@test.com",
       password: "patchbookingspassword",
     });
+    expect([200, 201, 409]).toContain(signupRes.statusCode);
     //login for all PATCH
     const res = await request(app).post("/api/auth/login").send({
       email: "patchbookingstester@test.com",
       password: "patchbookingspassword",
     });
-
+    expect(res.statusCode).toBe(200);
+    expect(res.body.token).toBeDefined();
     // get token for all PATCH
     token = res.body.token;
   });
@@ -76,7 +80,7 @@ describe("PATCH /users/me", () => {
     expect(res.statusCode).toBe(400);
   });
 
-  it("rejects empty body", async () => {
+  it("rejects invalid body (400)", async () => {
     // try to update userprofile with invalid inputs
     const res = await request(app)
       .patch("/api/users/me")
@@ -86,5 +90,86 @@ describe("PATCH /users/me", () => {
       });
 
     expect(res.statusCode).toBe(400);
+  });
+});
+
+describe("DELETE /users/me", () => {
+  //uses same signup, login and token for all DELETE tests
+  let token: string;
+  let email: string;
+  beforeEach(async () => {
+    //creates a new user for each delete test
+    email = `deletebookingstester+${crypto.randomUUID()}@test.com`;
+    //sign up for all DELETE
+    await request(app).post("/api/auth/signup").send({
+      name: "deletebookingstester",
+      email,
+      password: "deletebookingspassword",
+    });
+    //login for all DELETE
+    const loginRes = await request(app).post("/api/auth/login").send({
+      email,
+      password: "deletebookingspassword",
+    });
+    expect(loginRes.statusCode).toBe(200);
+    expect(loginRes.body.token).toBeDefined();
+
+    // get token for all DELETE
+    token = loginRes.body.token;
+  });
+
+  it("deletes user profile and returns 200", async () => {
+    // delete user profile
+    const res = await request(app)
+      .delete("/api/users/me")
+      .set("Authorization", `Bearer ${token}`);
+    // delete with 200
+    expect(res.statusCode).toBe(200);
+    //check message
+  });
+
+  it("cancels future bookings and restores stock", async () => {
+    // check original stock
+    const before = await db.one("SELECT stock FROM tickets WHERE id=$1", [1]);
+    console.log("before: ", before);
+
+    //makes a booking
+    const bookingRes = await request(app)
+      .post("/api/bookings")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ event_id: 1, ticket_id: 1, quantity: 1 });
+    const afterbooking = await db.one("SELECT stock FROM tickets WHERE id=$1", [
+      1,
+    ]);
+    expect(bookingRes.statusCode).toBe(201);
+    console.log("after booking: ", afterbooking);
+    expect(afterbooking.stock).toBe(before.stock - 1);
+
+    // delete user profile
+    const res = await request(app)
+      .delete("/api/users/me")
+      .set("Authorization", `Bearer ${token}`);
+    expect(res.statusCode).toBe(200);
+
+    //check stock after booking and deleting
+    const after = await db.one("SELECT stock FROM tickets WHERE id=$1", [1]);
+    console.log("after: ", after);
+
+    //expecting the stock NOT to be reduced by the number of quantity
+    expect(after.stock).toBe(before.stock);
+  });
+
+  it("should not allow user to log in after profile is deleted - 401", async () => {
+    //delete user profile
+    const delRes = await request(app)
+      .delete("/api/users/me")
+      .set("Authorization", `Bearer ${token}`);
+    expect(delRes.statusCode).toBe(200);
+    // try to log user in again
+    const res = await request(app).post("/api/auth/login").send({
+      email,
+      password: "deletebookingspassword",
+    });
+    expect(res.statusCode).toBe(401);
   });
 });
