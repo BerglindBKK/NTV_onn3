@@ -1,8 +1,7 @@
 import dotenv from "dotenv";
-dotenv.config();
 
 // use the test database when testing
-if (process.env.VITEST) {
+if (process.env.NODE_ENV === "test") {
   dotenv.config({ path: ".env.test" });
 } else {
   dotenv.config();

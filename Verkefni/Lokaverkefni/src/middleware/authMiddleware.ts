@@ -40,9 +40,9 @@ export const authMiddleware = async (
   } catch (error) {
     // handles invalid or expired tokens
     if (error instanceof jwt.JsonWebTokenError) {
-      response.status(403).json({ error: "Aðgangur óheimill: Ógilt token..." });
+      response.status(401).json({ error: "Access denied: invalid token..." });
       return;
     }
-    throw error;
+    next(error);
   }
 };

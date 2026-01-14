@@ -19,8 +19,8 @@ app.use("/api/events", eventRoutes);
 app.use("/api/venues", venueRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/auth", authRoutes);
-app.use("/api/bookings", authMiddleware, bookingRoutes);
-app.use("/api/users", authMiddleware, userRoutes);
+app.use("/api/bookings", bookingRoutes);
+app.use("/api/users", userRoutes);
 
 app.use(errorHandler);
 

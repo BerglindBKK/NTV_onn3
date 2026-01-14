@@ -135,7 +135,7 @@ describe("POST /bookings", () => {
       .set("Authorization", `Bearer invalid.token`)
       .send({ event_id: 1, ticket_id: 1, quantity: 2 });
 
-    expect(res.status).toBe(403);
+    expect(res.status).toBe(401);
   });
 
   //event errors
