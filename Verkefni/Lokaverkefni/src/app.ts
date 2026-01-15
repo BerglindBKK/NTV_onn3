@@ -10,7 +10,6 @@ import authRoutes from "./routes/authRoutes.js";
 import bookingRoutes from "./routes/bookingRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import { errorHandler } from "./middleware/errorHandler.js";
-import { authMiddleware } from "./middleware/authMiddleware.js";
 console.log("Connected to database:", process.env.PGDATABASE);
 const app = express();
 app.use(express.json());

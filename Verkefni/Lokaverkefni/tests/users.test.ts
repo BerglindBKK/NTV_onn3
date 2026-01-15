@@ -131,7 +131,6 @@ describe("DELETE /users/me", () => {
   it("cancels future bookings and restores stock", async () => {
     // check original stock
     const before = await db.one("SELECT stock FROM tickets WHERE id=$1", [1]);
-    console.log("before: ", before);
 
     //makes a booking
     const bookingRes = await request(app)
@@ -142,7 +141,6 @@ describe("DELETE /users/me", () => {
       1,
     ]);
     expect(bookingRes.statusCode).toBe(201);
-    console.log("after booking: ", afterbooking);
     expect(afterbooking.stock).toBe(before.stock - 1);
 
     // delete user profile
@@ -153,7 +151,6 @@ describe("DELETE /users/me", () => {
 
     //check stock after booking and deleting
     const after = await db.one("SELECT stock FROM tickets WHERE id=$1", [1]);
-    console.log("after: ", after);
 
     //expecting the stock NOT to be reduced by the number of quantity
     expect(after.stock).toBe(before.stock);

@@ -10,7 +10,6 @@ export interface Category {
 export const getAllCategories = async (): Promise<Category[]> => {
   // pg-promise returns rows directly
   const rows = await db.any<Category>("SELECT * FROM categories ORDER BY name");
-  console.log("Categories fetched from database:", rows);
   return rows;
 };
 

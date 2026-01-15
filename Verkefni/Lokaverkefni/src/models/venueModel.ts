@@ -18,7 +18,6 @@ export interface EventAtVenue {
 export const getAllVenues = async (): Promise<Venue[]> => {
   // pg-promise returns rows directly
   const rows = await db.any<Venue>("SELECT * FROM venues ORDER BY name");
-  console.log("Venues fetched from database:", rows);
   return rows;
 };
 

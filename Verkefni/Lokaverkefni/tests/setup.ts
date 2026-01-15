@@ -23,10 +23,6 @@ beforeAll(async () => {
   await db.none(seedSQL);
 });
 
-// // Load seed.sql
-// const seedSQL = fs.readFileSync("src/sql/seed.sql").toString();
-// await db.none(seedSQL);
-
 // closes pg-promise connection
 afterAll(async () => {
   await db.$pool.end();
