@@ -16,24 +16,19 @@ if (!JWT_SECRET) {
 //rounds of hashing
 const SALT_ROUNDS = 12;
 
-// SIOGN IN CONTROLLER
-// reads name, email and password from the request body
-// checks if every field is completed,
-// checks if this email is already registered,
-// hashes the password with bcrypt,
 // saves the new user and returns th information without the hashed password
 export const signup = async (request: Request, response: Response) => {
   const { name, email, password } = request.body;
   if (!name || !email || !password) {
     return response.status(400).json({
-      error: "Netfang og/eða lykilorð vantar",
+      error: "Name, email and/or password missing",
     });
   }
 
   const existingUser = await findUserByEmail(email);
   if (existingUser) {
-    return response.status(400).json({
-      error: "Notandi þegar til með þetta netfang",
+    return response.status(409).json({
+      error: "Email already in use",
     });
   }
 
@@ -58,29 +53,23 @@ export const signup = async (request: Request, response: Response) => {
   });
 };
 
-// LOGIN CONTROLLER
-// requests email and password from the user,
-// checks if fields are completed,
-// checks if a user already exists with this email
-// compares the given password with the stored password,
-// if valid, created a signed JTW that expores in 1h,
-// returns the token
+// logs in user and returns a token
 export const login = async (request: Request, response: Response) => {
   const { email, password } = request.body;
   if (!email || !password) {
     return response.status(400).json({
-      error: "Netfang og/eða lykilorð vantar",
+      error: "Email or password missing",
     });
   }
 
   const user = await findUserByEmail(email);
   if (!user) {
-    return response.status(401).json({ error: "Rangt netfang eða lykilorð." });
+    return response.status(401).json({ error: "Wrong email or password" });
   }
 
   const isPasswordValid = await bcrypt.compare(password, user.password_hash);
   if (!isPasswordValid) {
-    return response.status(401).json({ error: "Rangt netfang eða lykilorð." });
+    return response.status(401).json({ error: "Wrong email or password" });
   }
 
   //creates a signed token
@@ -88,6 +77,7 @@ export const login = async (request: Request, response: Response) => {
     sub: user.id,
   };
 
+  // valid for an hour
   const token = jwt.sign(payload, JWT_SECRET, {
     expiresIn: "1h",
   });

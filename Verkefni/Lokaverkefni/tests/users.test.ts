@@ -1,7 +1,7 @@
 /// <reference types="vitest" />
 
 import request from "supertest";
-import app from "../src/app";
+import app from "../src/app.js";
 import db from "../src/config/db.js";
 import crypto from "crypto";
 
@@ -43,7 +43,7 @@ describe("PATCH /users/me", () => {
     expect(res.body).toHaveProperty("email");
   });
 
-  it("only allows unique emails (400)", async () => {
+  it("only allows unique emails (409)", async () => {
     // create another user with the intended email
     await request(app).post("/api/auth/signup").send({
       name: "noduplicate1",
@@ -59,7 +59,7 @@ describe("PATCH /users/me", () => {
         email: "noduplicate@test.com",
       });
 
-    expect(res.statusCode).toBe(400);
+    expect(res.statusCode).toBe(409);
     expect(res.body).toHaveProperty("error");
   });
 

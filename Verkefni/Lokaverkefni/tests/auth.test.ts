@@ -37,7 +37,7 @@ describe("Signup", () => {
       password: "noduplicatepassword",
     });
 
-    expect(res.status).toBe(400);
+    expect(res.status).toBe(409);
     expect(res.body.error).toBeDefined();
   });
 

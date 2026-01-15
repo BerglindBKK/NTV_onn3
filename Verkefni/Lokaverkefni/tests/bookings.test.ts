@@ -1,7 +1,7 @@
 /// <reference types="vitest" />
 
 import request from "supertest";
-import app from "../src/app";
+import app from "../src/app.js";
 import db from "../src/config/db.js";
 
 describe("GET /bookings", () => {

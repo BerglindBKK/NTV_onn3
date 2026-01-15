@@ -75,7 +75,7 @@ export const getFilteredEvents = async (filters: Filters) => {
   //filters for city, searchable
   if (filters.city) {
     conditions.push(`v.city ILIKE $${index++}`);
-    values.push(`%filters.city%`);
+    values.push(`%${filters.city}%`);
   }
   // filters for events starting on (inclusive) this date
   if (filters.date_from) {

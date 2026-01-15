@@ -54,7 +54,7 @@ export const updateUserProfileController = async (
       // if yes - checks if email is already being used by another user
       const existingUser = await findUserByEmail(email);
       if (existingUser && existingUser.id !== userId) {
-        res.status(400).json({ error: "Notandi þegar til með þetta netfang" });
+        res.status(409).json({ error: "Email already in use" });
         return;
       }
     }

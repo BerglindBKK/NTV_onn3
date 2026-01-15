@@ -1,7 +1,7 @@
 /// <reference types="vitest" />
 
 import request from "supertest";
-import app from "../src/app";
+import app from "../src/app.js";
 
 describe("GET /categories", () => {
   it("returns a list of events", async () => {
